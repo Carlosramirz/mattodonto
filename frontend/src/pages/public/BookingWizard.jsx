@@ -5,7 +5,7 @@ import {
   isBefore, startOfDay, parseISO
 } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, CheckCircle, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, CheckCircle, ArrowLeft, ShieldAlert } from 'lucide-react';
 
 // Función auxiliar para sumar minutos a una cadena de hora "HH:mm:ss" o "HH:mm"
 function addMinutesToTime(timeStr, minutes) {
@@ -73,12 +73,14 @@ export default function BookingWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   
   // Estado de Datos
+  const [dentists, setDentists] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [slotsByDate, setSlotsByDate] = useState({});
   const [appointmentTypes, setAppointmentTypes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Estado de Selección
+  const [selectedDentist, setSelectedDentist] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -88,7 +90,7 @@ export default function BookingWizard() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '+56',
+    phone: '+569',
     rut: '',
     reason: 'Consulta'
   });
@@ -106,12 +108,28 @@ export default function BookingWizard() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
+      await fetchDentists();
       await fetchAppointmentTypes();
-      await fetchAvailability();
       setLoading(false);
     };
     init();
   }, []);
+
+  const fetchDentists = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/public/dentists');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setDentists(data);
+      } else {
+        console.error('La respuesta de odontólogos no es un array:', data);
+        setDentists([]);
+      }
+    } catch (err) {
+      console.error('Error al obtener la lista de odontólogos:', err);
+      setDentists([]);
+    }
+  };
 
   const fetchAppointmentTypes = async () => {
     try {
@@ -132,9 +150,9 @@ export default function BookingWizard() {
     }
   };
 
-  const fetchAvailability = async () => {
+  const fetchAvailability = async (dentistId) => {
     try {
-      const res = await fetch('http://localhost:3001/api/public/availability');
+      const res = await fetch(`http://localhost:3001/api/public/availability?dentist_id=${dentistId}`);
       const data = await res.json();
       
       if (Array.isArray(data)) {
@@ -163,6 +181,15 @@ export default function BookingWizard() {
   const handlePrevStep = () => {
     setBookingError(null);
     setCurrentStep(prev => prev - 1);
+  };
+
+  const handleDentistSelect = async (dentist) => {
+    setSelectedDentist(dentist);
+    // Limpiar selecciones previas
+    setSelectedDate(null);
+    setSelectedSlot(null);
+    await fetchAvailability(dentist.id);
+    handleNextStep();
   };
 
   // Función para filtrar bloques horarios con disponibilidad suficiente para el tipo de cita
@@ -206,10 +233,10 @@ export default function BookingWizard() {
       }
 
       setBookingSuccess(true);
-      setCurrentStep(6); // Paso de éxito
+      setCurrentStep(7); // Paso de éxito
       
       // Recargar disponibilidad en segundo plano
-      fetchAvailability();
+      fetchAvailability(selectedDentist.id);
     } catch (err) {
       setBookingError(err.message);
     } finally {
@@ -219,10 +246,59 @@ export default function BookingWizard() {
 
   // --- RENDERIZADO DE PASOS ---
 
-  // PASO 1: Selección de Tipo de Cita
-  const renderStep1Type = () => {
+  // PASO 1: Selección de Odontólogo
+  const renderStep1Dentist = () => {
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+          <User className="w-6 h-6 mr-3 text-blue-600" />
+          Selecciona tu Odontólogo
+        </h2>
+        
+        {dentists.length === 0 ? (
+          <div className="text-center p-8 bg-gray-50 rounded-2xl border border-gray-250">
+            <p className="text-gray-600">No hay odontólogos registrados actualmente en el sistema.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {dentists.map(dentist => {
+              const isSelected = selectedDentist?.id === dentist.id;
+              return (
+                <button
+                  key={dentist.id}
+                  type="button"
+                  onClick={() => handleDentistSelect(dentist)}
+                  className={`
+                    p-6 text-left rounded-2xl transition-all border-2 flex items-center justify-between gap-3
+                    ${isSelected 
+                      ? 'border-blue-600 bg-blue-50/50 shadow-md shadow-blue-50/50' 
+                      : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'}
+                  `}
+                >
+                  <div>
+                    <span className="font-bold text-lg text-gray-900 block">{dentist.full_name}</span>
+                    <span className="text-xs text-gray-500 font-medium">Cirujano Dentista</span>
+                  </div>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
+                    {isSelected && <span className="w-2.5 h-2.5 bg-white rounded-full"></span>}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // PASO 2: Selección de Tipo de Cita
+  const renderStep2Type = () => {
+    return (
+      <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+        <button onClick={handlePrevStep} className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 mb-6 transition-colors">
+          <ArrowLeft className="w-4 h-4 mr-1" /> Volver a odontólogos
+        </button>
+
         <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
           <CalendarIcon className="w-6 h-6 mr-3 text-blue-600" />
           Selecciona el Tipo de Cita
@@ -240,7 +316,7 @@ export default function BookingWizard() {
                   w-full p-5 text-left rounded-2xl transition-all border-2 flex flex-col md:flex-row md:items-center justify-between gap-3
                   ${isSelected 
                     ? 'border-blue-600 bg-blue-50/50 shadow-md shadow-blue-50/50' 
-                    : 'border-gray-150 bg-white hover:border-blue-300 hover:shadow-md'}
+                    : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'}
                 `}
               >
                 <div>
@@ -270,8 +346,8 @@ export default function BookingWizard() {
     );
   };
 
-  // PASO 2: Selección de Fecha (Calendario)
-  const renderStep2Calendar = () => {
+  // PASO 3: Selección de Fecha (Calendario)
+  const renderStep3Calendar = () => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
@@ -340,7 +416,9 @@ export default function BookingWizard() {
           <CalendarIcon className="w-6 h-6 mr-3 text-blue-600" />
           Elige una Fecha
         </h2>
-        <p className="text-gray-500 mb-6">Mostrando días disponibles para: <strong>{selectedType?.name}</strong></p>
+        <p className="text-gray-500 mb-6">
+          Mostrando días con horas libres para <strong>{selectedType?.name}</strong> con el Dr(a). <strong>{selectedDentist?.full_name}</strong>
+        </p>
         
         <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100">
           <div className="flex justify-between items-center mb-6">
@@ -375,8 +453,8 @@ export default function BookingWizard() {
     );
   };
 
-  // PASO 3: Selección de Horario
-  const renderStep3Slots = () => {
+  // PASO 4: Selección de Horario
+  const renderStep4Slots = () => {
     const dateKey = format(selectedDate, 'yyyy-MM-dd');
     const validSlots = getValidSlotsForDate(dateKey, selectedType);
 
@@ -391,8 +469,8 @@ export default function BookingWizard() {
           Horarios Disponibles
         </h2>
         <p className="text-gray-500 mb-6 flex flex-wrap gap-1">
-          Mostrando horas para el <span>{format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}</span>
-          <span>({selectedType?.name})</span>
+          Horarios para el <span>{format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}</span>
+          <span>con el Dr(a). <strong>{selectedDentist?.full_name}</strong></span>
         </p>
 
         {selectedType?.requires_double_slot && (
@@ -418,7 +496,7 @@ export default function BookingWizard() {
                   p-4 rounded-2xl font-bold text-lg transition-all border-2
                   ${selectedSlot?.id === slot.id 
                     ? 'border-blue-600 bg-blue-50 text-blue-700' 
-                    : 'border-gray-150 bg-white hover:border-blue-300 hover:shadow-md text-gray-700'}
+                    : 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-md text-gray-700'}
                 `}
               >
                 {slot.start_time.substring(0, 5)}
@@ -430,8 +508,8 @@ export default function BookingWizard() {
     );
   };
 
-  // PASO 4: Datos del Paciente
-  const renderStep4Form = () => {
+  // PASO 5: Datos del Paciente
+  const renderStep5Form = () => {
     return (
       <div className="animate-in fade-in slide-in-from-right-8 duration-500">
         <button onClick={handlePrevStep} className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 mb-6 transition-colors">
@@ -522,8 +600,8 @@ export default function BookingWizard() {
     );
   };
 
-  // PASO 5: Resumen y Confirmación
-  const renderStep5Confirm = () => {
+  // PASO 6: Resumen y Confirmación
+  const renderStep6Confirm = () => {
     return (
       <div className="animate-in fade-in slide-in-from-right-8 duration-500">
         <button onClick={handlePrevStep} className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 mb-6 transition-colors" disabled={bookingLoading}>
@@ -536,6 +614,11 @@ export default function BookingWizard() {
         </h2>
 
         <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6 mb-8 space-y-4">
+          <div className="pb-4 border-b border-gray-200">
+            <p className="text-sm text-gray-500 font-medium">Odontólogo</p>
+            <p className="text-lg font-bold text-gray-900">Dr(a). {selectedDentist?.full_name}</p>
+          </div>
+
           <div className="pb-4 border-b border-gray-200">
             <p className="text-sm text-gray-500 font-medium">Cuándo</p>
             <p className="text-lg font-bold text-gray-900 capitalize">
@@ -566,7 +649,7 @@ export default function BookingWizard() {
 
         {bookingError && (
           <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 border border-red-100 flex items-start">
-            <div className="font-bold mr-2">¡Atención!</div>
+            <ShieldAlert className="w-5 h-5 mr-2 text-red-500 shrink-0 mt-0.5" />
             <div>{bookingError}</div>
           </div>
         )}
@@ -585,7 +668,7 @@ export default function BookingWizard() {
     );
   };
 
-  // RENDER ÉXITO (PASO 6)
+  // RENDER ÉXITO (PASO 7)
   const renderSuccess = () => {
     return (
       <div className="text-center animate-in zoom-in-95 duration-500 py-10">
@@ -595,7 +678,7 @@ export default function BookingWizard() {
         <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Cita Confirmada!</h2>
         <p className="text-gray-600 max-w-md mx-auto mb-8 text-lg">
           Te hemos enviado un correo a <span className="font-semibold">{formData.email}</span> con los detalles de tu cita. 
-          Te esperamos el <span className="font-semibold capitalize">{format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}</span> a las <span className="font-semibold">{selectedSlot?.start_time.substring(0, 5)}</span>.
+          Te esperamos el <span className="font-semibold capitalize">{format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}</span> a las <span className="font-semibold">{selectedSlot?.start_time.substring(0, 5)}</span> con el Dr(a). <span className="font-semibold">{selectedDentist?.full_name}</span>.
         </p>
         <button 
           onClick={() => window.location.reload()}
@@ -616,12 +699,12 @@ export default function BookingWizard() {
       </div>
 
       {/* Barra de Progreso (se oculta en el paso final de éxito) */}
-      {currentStep < 6 && (
-        <div className="flex items-center justify-between mb-10 max-w-md mx-auto px-4 relative">
+      {currentStep < 7 && (
+        <div className="flex items-center justify-between mb-10 max-w-xl mx-auto px-4 relative">
           <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -z-10 -translate-y-1/2"></div>
-          <div className="absolute top-1/2 left-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 transition-all duration-500" style={{ width: `${((currentStep - 1) / 4) * 100}%` }}></div>
+          <div className="absolute top-1/2 left-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 transition-all duration-500" style={{ width: `${((currentStep - 1) / 5) * 100}%` }}></div>
           
-          {[1, 2, 3, 4, 5].map(step => (
+          {[1, 2, 3, 4, 5, 6].map(step => (
             <div 
               key={step} 
               className={`
@@ -644,12 +727,13 @@ export default function BookingWizard() {
           </div>
         ) : (
           <>
-            {currentStep === 1 && renderStep1Type()}
-            {currentStep === 2 && renderStep2Calendar()}
-            {currentStep === 3 && renderStep3Slots()}
-            {currentStep === 4 && renderStep4Form()}
-            {currentStep === 5 && renderStep5Confirm()}
-            {currentStep === 6 && renderSuccess()}
+            {currentStep === 1 && renderStep1Dentist()}
+            {currentStep === 2 && renderStep2Type()}
+            {currentStep === 3 && renderStep3Calendar()}
+            {currentStep === 4 && renderStep4Slots()}
+            {currentStep === 5 && renderStep5Form()}
+            {currentStep === 6 && renderStep6Confirm()}
+            {currentStep === 7 && renderSuccess()}
           </>
         )}
       </div>

@@ -1,7 +1,11 @@
 import express from 'express';
 import { supabase } from '../supabaseClient.js';
+import { requireStaff } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
+
+// Proteger todas las rutas con requireStaff (dentist, assistant, admin)
+router.use(requireStaff);
 
 // Helper to add minutes to a "HH:mm" time string
 function addMinutes(timeStr, minutesToAdd) {
@@ -14,9 +18,10 @@ function addMinutes(timeStr, minutesToAdd) {
 
 // GET /api/availability
 // Queries availability. Supports ?date=YYYY-MM-DD or ?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
+// and ?dentist_id=UUID (optional for assistants/admins, mandatory filter for dentists).
 router.get('/', async (req, res) => {
   try {
-    const { date, startDate, endDate } = req.query;
+    const { date, startDate, endDate, dentist_id } = req.query;
     
     let query = supabase
       .from('availability')
@@ -38,6 +43,15 @@ router.get('/', async (req, res) => {
       query = query.eq('date', date);
     } else if (startDate && endDate) {
       query = query.gte('date', startDate).lte('date', endDate);
+    }
+
+    // Filtrado de dentist_id basado en el rol
+    if (req.user.role === 'dentist') {
+      // Dentista siempre ve únicamente sus propios bloques, no se puede eludir
+      query = query.eq('dentist_id', req.user.id);
+    } else if (dentist_id) {
+      // Asistentes o admins pueden filtrar por un dentista específico
+      query = query.eq('dentist_id', dentist_id);
     }
 
     const { data, error } = await query;
@@ -65,10 +79,16 @@ router.get('/', async (req, res) => {
 // Body: { dentist_id, date, startTime, endTime, durationMinutes, bufferMinutes }
 router.post('/', async (req, res) => {
   try {
-    const { dentist_id, date, startTime, endTime, durationMinutes, bufferMinutes } = req.body;
+    const { date, startTime, endTime, durationMinutes, bufferMinutes } = req.body;
+    let targetDentistId = req.body.dentist_id;
 
-    if (!dentist_id || !date || !startTime || !endTime || !durationMinutes) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    // Si es odontólogo, sobreescribir dentist_id obligatoriamente con el suyo propio del token
+    if (req.user.role === 'dentist') {
+      targetDentistId = req.user.id;
+    }
+
+    if (!targetDentistId || !date || !startTime || !endTime || !durationMinutes) {
+      return res.status(400).json({ error: 'Faltan campos requeridos.' });
     }
 
     const slots = [];
@@ -83,7 +103,7 @@ router.post('/', async (req, res) => {
       }
 
       slots.push({
-        dentist_id,
+        dentist_id: targetDentistId,
         date,
         start_time: currentTime,
         end_time: slotEndTime,
@@ -96,7 +116,7 @@ router.post('/', async (req, res) => {
     }
 
     if (slots.length === 0) {
-      return res.status(400).json({ error: 'Time range is too short for a single slot' });
+      return res.status(400).json({ error: 'El rango de tiempo es demasiado corto para un bloque.' });
     }
 
     const { data, error } = await supabase
@@ -106,7 +126,7 @@ router.post('/', async (req, res) => {
 
     if (error) throw error;
 
-    res.status(201).json({ message: 'Slots generated successfully', slots: data });
+    res.status(201).json({ message: 'Bloques generados exitosamente', slots: data });
   } catch (err) {
     console.error('Error generating availability:', err);
     res.status(500).json({ error: err.message });
@@ -118,20 +138,28 @@ router.put('/:id/toggle', async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if slot has an appointment
+    // Check if slot exists and fetch details
     const { data: slot, error: fetchError } = await supabase
       .from('availability')
       .select(`
         is_active,
+        dentist_id,
         appointment_blocks (id)
       `)
       .eq('id', id)
       .single();
 
-    if (fetchError) throw fetchError;
+    if (fetchError || !slot) {
+      return res.status(404).json({ error: 'Bloque de disponibilidad no encontrado.' });
+    }
+
+    // Dentista solo puede modificar sus propios bloques
+    if (req.user.role === 'dentist' && slot.dentist_id !== req.user.id) {
+      return res.status(403).json({ error: 'Acceso denegado. No eres el propietario de este bloque.' });
+    }
 
     if (slot.appointment_blocks && slot.appointment_blocks.length > 0) {
-      return res.status(400).json({ error: 'Cannot toggle an availability slot that already has an appointment.' });
+      return res.status(400).json({ error: 'No se puede desactivar un bloque que ya tiene una cita agendada.' });
     }
 
     const { data, error: updateError } = await supabase

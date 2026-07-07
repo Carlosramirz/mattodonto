@@ -5,7 +5,7 @@ import { Calendar as CalendarIcon, Clock, Trash2, Power, PowerOff, ChevronLeft, 
 import { useAuth } from '../../context/AuthContext';
 
 export default function Availability() {
-  const { user } = useAuth();
+  const { user, apiFetch } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState([]);
@@ -28,11 +28,12 @@ export default function Availability() {
     setLoading(true);
     try {
       const formattedDate = format(date, 'yyyy-MM-dd');
-      const res = await fetch(`http://localhost:3001/api/availability?date=${formattedDate}`);
+      const res = await apiFetch(`/api/availability?date=${formattedDate}`);
       const data = await res.json();
-      setSlots(data);
+      setSlots(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching slots:', error);
+      setSlots([]);
     } finally {
       setLoading(false);
     }
@@ -42,9 +43,8 @@ export default function Availability() {
     e.preventDefault();
     try {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-      const res = await fetch('http://localhost:3001/api/availability', {
+      const res = await apiFetch('/api/availability', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           dentist_id: dentistId,
           date: formattedDate,
@@ -68,7 +68,7 @@ export default function Availability() {
 
   const toggleSlot = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/availability/${id}/toggle`, {
+      const res = await apiFetch(`/api/availability/${id}/toggle`, {
         method: 'PUT'
       });
       if (res.ok) {

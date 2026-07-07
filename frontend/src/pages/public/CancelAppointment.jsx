@@ -360,11 +360,15 @@ export default function CancelAppointment() {
           </div>
         )}
 
-        {/* Listado de Citas Múltiples encontradas por RUT + Email */}
+        {/* Listado de Citas Múltiples/Única encontradas por RUT + Email */}
         {multipleAppointments.length > 0 && (
           <div className="space-y-6">
             <div className="border-b border-gray-100 pb-4 text-center">
-              <p className="text-sm text-gray-600">Encontramos múltiples citas activas. Selecciona cuál deseas cancelar:</p>
+              <p className="text-sm text-gray-600">
+                {multipleAppointments.length === 1 
+                  ? 'Hemos encontrado la siguiente cita activa. Confirma su cancelación:' 
+                  : 'Encontramos múltiples citas activas. Selecciona cuál deseas cancelar:'}
+              </p>
             </div>
 
             <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
@@ -377,14 +381,16 @@ export default function CancelAppointment() {
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <input 
-                    type="radio" 
-                    name="selected_appt" 
-                    value={appt.id}
-                    checked={selectedAppointmentId === appt.id}
-                    onChange={() => setSelectedAppointmentId(appt.id)}
-                    className="mt-1.5 mr-3 text-blue-600 focus:ring-blue-500"
-                  />
+                  {multipleAppointments.length > 1 && (
+                    <input 
+                      type="radio" 
+                      name="selected_appt" 
+                      value={appt.id}
+                      checked={selectedAppointmentId === appt.id}
+                      onChange={() => setSelectedAppointmentId(appt.id)}
+                      className="mt-1.5 mr-3 text-blue-600 focus:ring-blue-500"
+                    />
+                  )}
                   <div className="text-sm">
                     <p className="font-bold text-gray-900 capitalize">
                       {format(parseISO(appt.date), "EEEE d 'de' MMMM, yyyy", { locale: es })}

@@ -9,6 +9,13 @@ import {
 } from '../services/emailService.js';
 import { validateRut, normalizeRut } from '../utils/rutValidator.js';
 
+// ============================================================================
+// ADVERTENCIA DE PRIVACIDAD:
+// Ninguno de los endpoints públicos de este archivo (/api/public/*) debe exponer,
+// retornar o realizar JOINs con la tabla `patients`. Dicha tabla contiene información
+// médica y de salud altamente sensible y confidencial.
+// ============================================================================
+
 const router = express.Router();
 
 // GET /api/public/appointment-types
@@ -29,13 +36,38 @@ router.get('/appointment-types', async (req, res) => {
   }
 });
 
+// GET /api/public/dentists
+// Retorna la lista de todos los odontólogos registrados para usar en los selectores
+router.get('/dentists', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, full_name')
+      .eq('role', 'dentist')
+      .order('full_name', { ascending: true });
+
+    if (error) throw error;
+
+    res.json(data);
+  } catch (err) {
+    console.error('Error al obtener lista de odontólogos:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/public/availability
-// Retorna todos los bloques horarios futuros disponibles (is_active = true y sin citas asociadas)
+// Retorna todos los bloques horarios futuros disponibles para un odontólogo específico (is_active = true y sin citas asociadas)
 router.get('/availability', async (req, res) => {
   try {
+    const { dentist_id } = req.query;
+
+    if (!dentist_id) {
+      return res.status(400).json({ error: 'El campo dentist_id es obligatorio' });
+    }
+
     const today = format(new Date(), 'yyyy-MM-dd');
     
-    // Obtenemos disponibilidad activa desde hoy en adelante
+    // Obtenemos disponibilidad activa desde hoy en adelante filtrada por odontólogo
     const { data, error } = await supabase
       .from('availability')
       .select(`
@@ -48,6 +80,7 @@ router.get('/availability', async (req, res) => {
         appointment_blocks (id)
       `)
       .eq('is_active', true)
+      .eq('dentist_id', dentist_id)
       .gte('date', today)
       .order('date', { ascending: true })
       .order('start_time', { ascending: true });
@@ -244,7 +277,7 @@ router.post('/appointments/cancel/:token', async (req, res) => {
 });
 
 // POST /api/public/appointments/cancel-by-rut
-// Busca citas activas que coincidan con RUT + Email
+// Busca citas activas que coincidan con RUT + Email y las retorna para confirmación
 router.post('/appointments/cancel-by-rut', async (req, res) => {
   try {
     const { rut, email } = req.body;
@@ -282,40 +315,7 @@ router.post('/appointments/cancel-by-rut', async (req, res) => {
       return res.status(404).json({ error: 'No encontramos citas activas con esos datos.' });
     }
 
-    if (appointments.length === 1) {
-      // Caso 1: Cita única -> Cancelar de inmediato aplicando política
-      const appt = appointments[0];
-      const { date, start_time } = appt.appointment_blocks[0].availability;
-
-      // Validar política de 2 horas
-      const apptDateTime = parseISO(`${date}T${start_time}`);
-      const now = new Date();
-      const hoursDiff = differenceInHours(apptDateTime, now);
-
-      if (hoursDiff < 2) {
-        const dentistPhone = process.env.DENTIST_PHONE || '+56900000000';
-        return res.status(400).json({ 
-          error: `Esta cita es en menos de 2 horas. Para cancelar, contacta directamente al odontólogo al ${dentistPhone}.` 
-        });
-      }
-
-      // Liberar bloques y actualizar
-      await supabase.from('appointment_blocks').delete().eq('appointment_id', appt.id);
-      await supabase.from('appointments').update({ status: 'cancelled' }).eq('id', appt.id);
-
-      // Notificaciones
-      const emailData = {
-        ...appt,
-        date,
-        start_time
-      };
-      sendCancellationNotificationToDentist(emailData).catch(e => console.error(e));
-      sendCancellationConfirmationToPatient(emailData).catch(e => console.error(e));
-
-      return res.json({ message: 'Cita cancelada exitosamente.' });
-    }
-
-    // Caso 2: Múltiples citas -> Retornar lista para selección
+    // Retornar lista de citas activas encontradas para que el paciente confirme cuál cancelar
     const list = appointments.map(appt => {
       const firstBlock = appt.appointment_blocks[0];
       return {

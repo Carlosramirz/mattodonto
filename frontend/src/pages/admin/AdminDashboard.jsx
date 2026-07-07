@@ -452,6 +452,7 @@ function BlockDayManager({ apiFetch }) {
   );
 }
 
+
 // ==========================================
 // 3. USER MANAGER
 // ==========================================
@@ -459,6 +460,7 @@ function UserManager({ apiFetch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [userRole, setUserRole] = useState('dentist');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ text: '', type: '' });
 
@@ -470,15 +472,16 @@ function UserManager({ apiFetch }) {
     try {
       const res = await apiFetch('/api/admin/users/dentist', {
         method: 'POST',
-        body: JSON.stringify({ email, password, full_name: name })
+        body: JSON.stringify({ email, password, full_name: name, role: userRole })
       });
       const data = await res.json();
       
       if (res.ok) {
-        setStatus({ text: 'Odontólogo creado exitosamente', type: 'success' });
+        setStatus({ text: `${userRole === 'assistant' ? 'Asistente' : 'Odontólogo'} creado exitosamente`, type: 'success' });
         setEmail('');
         setPassword('');
         setName('');
+        setUserRole('dentist');
       } else {
         setStatus({ text: data.error || 'Error al crear usuario', type: 'error' });
       }
@@ -491,9 +494,9 @@ function UserManager({ apiFetch }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-lg animate-in fade-in">
-      <h2 className="text-xl font-bold text-gray-900 mb-2">Nuevo Odontólogo</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-2">Nuevo Usuario (Personal)</h2>
       <p className="text-gray-500 mb-6 text-sm">
-        Crea una cuenta con rol 'dentist' para que un profesional pueda acceder a su agenda.
+        Crea una cuenta con rol 'dentist' u 'assistant' para que el personal pueda acceder al portal.
       </p>
 
       {status.text && (
@@ -526,6 +529,17 @@ function UserManager({ apiFetch }) {
             value={password} onChange={e => setPassword(e.target.value)}
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rol del Usuario</label>
+          <select
+            value={userRole}
+            onChange={e => setUserRole(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+          >
+            <option value="dentist">Odontólogo</option>
+            <option value="assistant">Asistente</option>
+          </select>
         </div>
         
         <button 

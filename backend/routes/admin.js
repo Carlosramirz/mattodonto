@@ -10,20 +10,24 @@ const router = express.Router();
 router.use(requireAdmin);
 
 // POST /api/admin/users/dentist
-// Creates a new dentist account
+// Creates a new dentist or assistant account
 router.post('/users/dentist', async (req, res) => {
   try {
-    const { email, password, full_name } = req.body;
+    const { email, password, full_name, role = 'dentist' } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email y contraseña son obligatorios' });
+    }
+
+    if (role !== 'dentist' && role !== 'assistant') {
+      return res.status(400).json({ error: 'Rol no permitido. Debe ser dentist o assistant.' });
     }
 
     // 1. Create user in Supabase Auth
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: true // Auto-confirm for dentists created by admin
+      email_confirm: true // Auto-confirm for staff created by admin
     });
 
     if (authError) {
@@ -32,12 +36,12 @@ router.post('/users/dentist', async (req, res) => {
 
     const userId = authData.user.id;
 
-    // 2. Insert into public.users table with role 'dentist'
+    // 2. Insert into public.users table with the selected role
     const { error: dbError } = await supabaseAdmin
       .from('users')
       .insert({
         id: userId,
-        role: 'dentist',
+        role: role,
         full_name: full_name || ''
       });
 
@@ -47,9 +51,12 @@ router.post('/users/dentist', async (req, res) => {
       return res.status(500).json({ error: 'Error al registrar el perfil de usuario' });
     }
 
-    res.status(201).json({ message: 'Odontólogo creado exitosamente', user: authData.user });
+    res.status(201).json({ 
+      message: `${role === 'assistant' ? 'Asistente' : 'Odontólogo'} creado exitosamente`, 
+      user: authData.user 
+    });
   } catch (err) {
-    console.error('Error creating dentist:', err);
+    console.error('Error creating user:', err);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
@@ -270,6 +277,55 @@ router.post('/availability/block-day', async (req, res) => {
     res.json({ message: `Día ${date} bloqueado exitosamente. Citas canceladas: ${appointmentIdsToCancel.length}` });
   } catch (err) {
     console.error('Error blocking day:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// PUT /api/admin/patients/:id/reassign
+// Permite al administrador reasignar el odontólogo (dentist_id) de un paciente.
+// Retorna únicamente el id y el full_name del paciente por privacidad de datos clínicos.
+router.put('/patients/:id/reassign', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { dentist_id } = req.body;
+
+    if (!dentist_id) {
+      return res.status(400).json({ error: 'El campo dentist_id es obligatorio' });
+    }
+
+    // Verificar que el nuevo odontólogo exista y sea realmente un odontólogo
+    const { data: dentistUser, error: dentistError } = await supabaseAdmin
+      .from('users')
+      .select('id, role')
+      .eq('id', dentist_id)
+      .single();
+
+    if (dentistError || !dentistUser) {
+      return res.status(400).json({ error: 'El odontólogo especificado no existe' });
+    }
+
+    if (dentistUser.role !== 'dentist') {
+      return res.status(400).json({ error: 'El usuario especificado no tiene rol de odontólogo' });
+    }
+
+    // Actualizar el dentist_id del paciente
+    const { data: updatedPatient, error: updateError } = await supabaseAdmin
+      .from('patients')
+      .update({ dentist_id })
+      .eq('id', id)
+      .select('id, full_name')
+      .single();
+
+    if (updateError || !updatedPatient) {
+      return res.status(404).json({ error: 'Paciente no encontrado' });
+    }
+
+    res.json({
+      message: 'Paciente reasignado exitosamente',
+      patient: updatedPatient
+    });
+  } catch (err) {
+    console.error('Error al reasignar paciente:', err);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });

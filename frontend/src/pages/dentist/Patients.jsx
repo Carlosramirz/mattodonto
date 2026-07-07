@@ -1,0 +1,478 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { 
+  Search, UserPlus, Phone, CreditCard, Shield, 
+  ChevronLeft, ChevronRight, User, Loader2, X, Plus, AlertCircle
+} from 'lucide-react';
+
+// Función auxiliar para formatear RUT chileno XX.XXX.XXX-X
+function formatRut(value) {
+  let clean = value.replace(/[^0-9kK]/g, '').toUpperCase();
+  if (clean.length === 0) return '';
+  if (clean.length > 9) clean = clean.slice(0, 9);
+  if (clean.length === 1) return clean;
+  
+  const dv = clean.slice(-1);
+  const body = clean.slice(0, -1);
+  
+  let formattedBody = '';
+  let count = 0;
+  for (let i = body.length - 1; i >= 0; i--) {
+    formattedBody = body[i] + formattedBody;
+    count++;
+    if (count % 3 === 0 && i !== 0) {
+      formattedBody = '.' + formattedBody;
+    }
+  }
+  return `${formattedBody}-${dv}`;
+}
+
+// Función auxiliar para validar RUT chileno (módulo 11)
+function validateChileanRut(rutStr) {
+  if (typeof rutStr !== 'string') return false;
+  const clean = rutStr.replace(/[^0-9kK]/g, '').toUpperCase();
+  if (clean.length < 7) return false;
+  
+  const dv = clean.slice(-1);
+  const body = clean.slice(0, -1);
+  
+  let sum = 0;
+  let multiplier = 2;
+  
+  for (let i = body.length - 1; i >= 0; i--) {
+    sum += parseInt(body[i], 10) * multiplier;
+    multiplier = multiplier === 7 ? 2 : multiplier + 1;
+  }
+  
+  const remainder = sum % 11;
+  const result = 11 - remainder;
+  
+  let expectedDv;
+  if (result === 11) expectedDv = '0';
+  else if (result === 10) expectedDv = 'K';
+  else expectedDv = String(result);
+  
+  return dv === expectedDv;
+}
+
+export default function Patients() {
+  const { apiFetch } = useAuth();
+  const navigate = useNavigate();
+
+  const basePath = 'dentist';
+
+  // Estados
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Estado Modal Formulario
+  const [showModal, setShowModal] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState(null);
+  const [rutError, setRutError] = useState(null);
+
+  // Estado del Formulario de Creación
+  const [formData, setFormData] = useState({
+    full_name: '',
+    rut: '',
+    phone: '+569',
+    email: '',
+    address: '',
+    birth_date: '',
+    sex: 'Masculino',
+    gender_identity: '',
+    prevision: 'Particular',
+    prevision_detail: ''
+  });
+
+  useEffect(() => {
+    fetchPatients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, search]);
+
+  const fetchPatients = async () => {
+    setLoading(true);
+    try {
+      const res = await apiFetch(`/api/dentist/patients?search=${encodeURIComponent(search)}&page=${page}`);
+      const data = await res.json();
+      if (res.ok) {
+        setPatients(data.patients || []);
+        setTotalPages(data.totalPages || 1);
+        setTotalCount(data.totalCount || 0);
+      } else {
+        console.error('Error al obtener pacientes:', data.error);
+      }
+    } catch (err) {
+      console.error('Error en fetchPatients:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setPage(1); // Volver a la primera página ante cambios de búsqueda
+  };
+
+  const handleRutChange = (e) => {
+    const formatted = formatRut(e.target.value);
+    setFormData({ ...formData, rut: formatted });
+    setRutError(null);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormError(null);
+    setRutError(null);
+
+    // Validar RUT
+    if (!validateChileanRut(formData.rut)) {
+      setRutError('El RUT ingresado no es válido. Verifica e intenta de nuevo.');
+      return;
+    }
+
+    setFormLoading(true);
+    try {
+      const res = await apiFetch('/api/dentist/patients', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        // Cerrar modal y limpiar
+        setShowModal(false);
+        setFormData({
+          full_name: '',
+          rut: '',
+          phone: '+569',
+          email: '',
+          address: '',
+          birth_date: '',
+          sex: 'Masculino',
+          gender_identity: '',
+          prevision: 'Particular',
+          prevision_detail: ''
+        });
+        fetchPatients(); // Refrescar listado
+      } else {
+        setFormError(data.error || 'Error al guardar el paciente.');
+      }
+    } catch (err) {
+      console.error('Error al crear paciente:', err);
+      setFormError('Ocurrió un error en el servidor al intentar crear el paciente.');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
+      {/* Cabecera */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Fichas Clínicas</h1>
+          <p className="text-gray-500 mt-2">Administración y registro de datos de pacientes.</p>
+        </div>
+        <button 
+          onClick={() => { setShowModal(true); setFormError(null); setRutError(null); }}
+          className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5"
+        >
+          <UserPlus className="w-5 h-5" />
+          <span>Nueva Ficha</span>
+        </button>
+      </div>
+
+      {/* Caja de Búsqueda */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center space-x-3">
+        <Search className="w-5 h-5 text-gray-400 shrink-0" />
+        <input 
+          type="text" 
+          value={search}
+          onChange={handleSearchChange}
+          placeholder="Buscar paciente por nombre o RUT..."
+          className="w-full text-gray-800 outline-none text-sm placeholder-gray-400 bg-transparent"
+        />
+        {search && (
+          <button onClick={() => setSearch('')} className="text-xs text-gray-400 hover:text-gray-600 font-bold px-2">
+            Limpiar
+          </button>
+        )}
+      </div>
+
+      {/* Listado */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-h-[400px] flex flex-col justify-between">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50/50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="py-4 px-6">Nombre</th>
+                <th className="py-4 px-6">RUT</th>
+                <th className="py-4 px-6">Teléfono</th>
+                <th className="py-4 px-6">Previsión</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-sm">
+              {loading ? (
+                <tr>
+                  <td colSpan="4" className="py-20 text-center text-gray-400">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600 mb-2" />
+                    Cargando listado de pacientes...
+                  </td>
+                </tr>
+              ) : patients.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="py-20 text-center">
+                    <User className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500 font-medium">No se encontraron pacientes registrados.</p>
+                    <p className="text-gray-400 text-xs mt-1">Crea un registro utilizando el botón "Nueva Ficha".</p>
+                  </td>
+                </tr>
+              ) : (
+                patients.map((patient) => (
+                  <tr 
+                    key={patient.id} 
+                    onClick={() => navigate(`/${basePath}/patients/${patient.id}`)}
+                    className="hover:bg-blue-50/20 cursor-pointer transition-all group"
+                  >
+                    <td className="py-4 px-6 font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {patient.full_name}
+                    </td>
+                    <td className="py-4 px-6 text-gray-600 font-mono text-xs">{patient.rut}</td>
+                    <td className="py-4 px-6 text-gray-600">
+                      <div className="flex items-center space-x-1.5">
+                        <Phone className="w-3.5 h-3.5 text-gray-400" />
+                        <span>{patient.phone || 'Sin registrar'}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center space-x-2">
+                        {patient.prevision === 'FONASA' ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 uppercase">
+                            FONASA
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 uppercase">
+                            {patient.prevision}
+                            {patient.prevision_detail && ` (${patient.prevision_detail})`}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="p-4 border-t border-gray-100 flex items-center justify-between">
+            <span className="text-xs text-gray-500 font-medium">
+              Mostrando página {page} de {totalPages} ({totalCount} pacientes)
+            </span>
+            <div className="flex space-x-2">
+              <button 
+                onClick={() => setPage(p => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+                disabled={page === totalPages}
+                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAL NUEVA FICHA */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-200">
+            <button 
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <UserPlus className="w-6 h-6 mr-3 text-blue-600" />
+              Crear Ficha de Paciente
+            </h2>
+            <p className="text-gray-500 mb-6 text-sm">Registra los datos básicos del paciente en el sistema.</p>
+
+            {formError && (
+              <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start border border-red-100 text-sm">
+                <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
+                <span>{formError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleFormSubmit} className="space-y-5">
+              {/* Nombre completo */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                <input 
+                  type="text" required
+                  value={formData.full_name} onChange={e => setFormData({ ...formData, full_name: e.target.value })}
+                  placeholder="Ej. Constanza Silva"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+
+              {/* RUT y Fecha de Nacimiento */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">RUT *</label>
+                  <input 
+                    type="text" required
+                    value={formData.rut} onChange={handleRutChange}
+                    placeholder="Ej. 12.345.678-5"
+                    className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 focus:border-transparent transition-all outline-none`}
+                  />
+                  {rutError ? (
+                    <p className="text-xs text-red-600 mt-1 font-medium">{rutError}</p>
+                  ) : (
+                    <p className="text-xs text-gray-500 mt-1">Formato: XX.XXX.XXX-X</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+                  <input 
+                    type="date"
+                    value={formData.birth_date} onChange={e => setFormData({ ...formData, birth_date: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Sexo e Identidad de Género */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sexo *</label>
+                  <select 
+                    value={formData.sex} onChange={e => setFormData({ ...formData, sex: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                  >
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Intersex">Intersex</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">¿Cómo se identifica?</label>
+                  <input 
+                    type="text"
+                    value={formData.gender_identity} onChange={e => setFormData({ ...formData, gender_identity: e.target.value })}
+                    placeholder="Identidad de género (opcional)"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Previsión */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Previsión *</label>
+                  <select 
+                    value={formData.prevision} onChange={e => setFormData({ ...formData, prevision: e.target.value, prevision_detail: '' })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                  >
+                    <option value="FONASA">FONASA</option>
+                    <option value="ISAPRE">ISAPRE</option>
+                    <option value="Particular">Particular</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+
+                {/* Mostrar el detalle solo si es ISAPRE u Otro */}
+                {(formData.prevision === 'ISAPRE' || formData.prevision === 'Otro') && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {formData.prevision === 'ISAPRE' ? 'Nombre ISAPRE *' : 'Detalle Previsión *'}
+                    </label>
+                    <input 
+                      type="text" required
+                      value={formData.prevision_detail} onChange={e => setFormData({ ...formData, prevision_detail: e.target.value })}
+                      placeholder={formData.prevision === 'ISAPRE' ? "Ej. Colmena, Banmédica" : "Ej. Convenio Especial"}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Teléfono y Correo */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                  <input 
+                    type="tel"
+                    value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                  <input 
+                    type="email"
+                    value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="ejemplo@correo.com"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Dirección */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                <input 
+                  type="text"
+                  value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })}
+                  placeholder="Ej. Calle Falsa 123, depto 40"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setShowModal(false)}
+                  className="w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={formLoading}
+                  className="w-1/2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center space-x-2"
+                >
+                  {formLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Guardando...</span>
+                    </>
+                  ) : (
+                    <span>Crear Ficha</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

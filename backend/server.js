@@ -5,6 +5,8 @@ import availabilityRoutes from './routes/availability.js';
 import dentistAppointmentsRoutes from './routes/dentistAppointments.js';
 import publicRoutes from './routes/public.js';
 import adminRoutes from './routes/admin.js';
+import patientRoutes from './routes/patients.js';
+import clinicalRecordsRoutes from './routes/clinicalRecords.js';
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use('/api/availability', availabilityRoutes);
 app.use('/api/dentist/appointments', dentistAppointmentsRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/dentist/patients', patientRoutes);
+app.use('/api/dentist', clinicalRecordsRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });

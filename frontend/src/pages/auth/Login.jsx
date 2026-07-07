@@ -15,6 +15,7 @@ export default function Login() {
   React.useEffect(() => {
     if (user && role) {
       if (role === 'admin') navigate('/admin/dashboard');
+      else if (role === 'assistant') navigate('/assistant/dashboard');
       else navigate('/dentist/dashboard');
     }
   }, [user, role, navigate]);

@@ -43,3 +43,91 @@ export const requireAdmin = async (req, res, next) => {
     res.status(500).json({ error: 'Error interno del servidor en autenticación' });
   }
 };
+
+// requireStaff permite odontólogos (dentist), administradores (admin) y asistentes (assistant)
+export const requireStaff = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Falta token de autenticación' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Verify token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+
+    // Check user role in public.users table
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !userProfile) {
+      return res.status(403).json({ error: 'Perfil de usuario no encontrado' });
+    }
+
+    if (userProfile.role !== 'admin' && userProfile.role !== 'dentist' && userProfile.role !== 'assistant') {
+      return res.status(403).json({ error: 'Acceso denegado. Se requieren permisos de personal autorizado.' });
+    }
+
+    req.user = {
+      ...user,
+      role: userProfile.role
+    };
+
+    next();
+  } catch (err) {
+    console.error('Auth middleware error:', err);
+    res.status(500).json({ error: 'Error interno del servidor en autenticación' });
+  }
+};
+
+// requireClinicalAccess restringe el acceso únicamente a odontólogos (dentist) y administradores (admin)
+export const requireClinicalAccess = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Falta token de autenticación' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Verify token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return res.status(401).json({ error: 'Token inválido o expirado' });
+    }
+
+    // Check user role in public.users table
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !userProfile) {
+      return res.status(403).json({ error: 'Perfil de usuario no encontrado' });
+    }
+
+    if (userProfile.role !== 'admin' && userProfile.role !== 'dentist') {
+      return res.status(403).json({ error: 'Acceso denegado. Se requieren permisos de personal clínico.' });
+    }
+
+    req.user = {
+      ...user,
+      role: userProfile.role
+    };
+
+    next();
+  } catch (err) {
+    console.error('Clinical auth middleware error:', err);
+    res.status(500).json({ error: 'Error interno del servidor en autenticación' });
+  }
+};

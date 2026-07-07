@@ -3,8 +3,10 @@ import { format, startOfWeek, addDays, isSameDay, differenceInMinutes, parse } f
 import { es } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Clock, CheckCircle, User, Phone, FileText } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Dashboard() {
+  const { apiFetch, user } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,12 +20,19 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const formattedDate = format(date, 'yyyy-MM-dd');
-      const res = await fetch(`http://localhost:3001/api/dentist/appointments?date=${formattedDate}`);
+      const res = await apiFetch(`/api/dentist/appointments?date=${formattedDate}`);
       const data = await res.json();
-      setAppointments(data);
-      calculateNextAppointment(data, date);
+      if (res.ok && Array.isArray(data)) {
+        setAppointments(data);
+        calculateNextAppointment(data, date);
+      } else {
+        setAppointments([]);
+        calculateNextAppointment([], date);
+      }
     } catch (error) {
       console.error('Error fetching appointments:', error);
+      setAppointments([]);
+      calculateNextAppointment([], date);
     } finally {
       setLoading(false);
     }
@@ -68,7 +77,7 @@ export default function Dashboard() {
   }, [appointments, selectedDate]);
 
   const calculateNextAppointment = (apps, date) => {
-    if (!isSameDay(date, new Date())) {
+    if (!isSameDay(date, new Date()) || !Array.isArray(apps)) {
       setTimeUntilNext(null);
       return;
     }
@@ -92,17 +101,17 @@ export default function Dashboard() {
 
   const markAsAttended = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/dentist/appointments/${id}/status`, {
+      const res = await apiFetch(`/api/dentist/appointments/${id}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'confirmed' })
       });
       if (!res.ok) {
         const err = await res.json();
         alert('Error: ' + err.error);
+      } else {
+        // Optimistic update
+        setAppointments(apps => apps.map(app => app.id === id ? { ...app, status: 'confirmed' } : app));
       }
-      // Optimistic update
-      setAppointments(apps => apps.map(app => app.id === id ? { ...app, status: 'confirmed' } : app));
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -114,7 +123,9 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Panel del Odontólogo</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Agenda de {user?.full_name || user?.email || 'Odontólogo'}
+        </h1>
         <p className="text-gray-500 mt-2">Resumen de tus citas y agenda diaria.</p>
       </div>
 
