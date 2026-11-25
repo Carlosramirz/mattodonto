@@ -54,6 +54,8 @@ function validateChileanRut(rutStr) {
   return dv === expectedDv;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 export default function CancelAppointment() {
   const { token } = useParams();
   
@@ -83,7 +85,7 @@ export default function CancelAppointment() {
 
   const fetchAppointment = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/public/appointments/cancel/${token}`);
+      const res = await fetch(`${API_URL}/api/public/appointments/cancel/${token}`);
       const data = await res.json();
       
       if (!res.ok) {
@@ -106,7 +108,7 @@ export default function CancelAppointment() {
     setCanceling(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:3001/api/public/appointments/cancel/${token}`, {
+      const res = await fetch(`${API_URL}/api/public/appointments/cancel/${token}`, {
         method: 'POST'
       });
       const data = await res.json();
@@ -138,7 +140,7 @@ export default function CancelAppointment() {
 
     setCancelingRut(true);
     try {
-      const res = await fetch('http://localhost:3001/api/public/appointments/cancel-by-rut', {
+      const res = await fetch(`${API_URL}/api/public/appointments/cancel-by-rut`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rut, email })
@@ -170,7 +172,7 @@ export default function CancelAppointment() {
     setError(null);
     setCancelingRut(true);
     try {
-      const res = await fetch('http://localhost:3001/api/public/appointments/cancel-specific', {
+      const res = await fetch(`${API_URL}/api/public/appointments/cancel-specific`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

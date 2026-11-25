@@ -5,6 +5,8 @@ import { Calendar as CalendarIcon, Clock, User, Phone, FileText, Plus, X, ArrowL
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 // Helper de suma de minutos para bloque doble
 function addMinutesToTime(timeStr, minutes) {
   if (!timeStr) return '';
@@ -15,6 +17,15 @@ function addMinutesToTime(timeStr, minutes) {
   const newH = Math.floor(total / 60) % 24;
   const newM = total % 60;
   return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}:00`;
+}
+
+// Obtener iniciales de un nombre
+function getInitials(name) {
+  if (!name) return 'D';
+  const cleanName = name.replace(/^(Dr\.|Dra\.)\s+/i, '');
+  const parts = cleanName.split(' ');
+  const initials = parts.map(p => p[0]).filter(Boolean).slice(0, 2).join('');
+  return initials.toUpperCase();
 }
 
 // Helper RUT chileno
@@ -84,7 +95,7 @@ export default function AssistantDashboard() {
   // Obtener lista de odontólogos
   const fetchDentists = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/public/dentists');
+      const res = await fetch(`${API_URL}/api/public/dentists`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setDentists(data);
@@ -164,20 +175,20 @@ export default function AssistantDashboard() {
   const pendingAppointments = appointments.filter(a => a.status === 'pending').length;
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-6 space-y-8 font-sans">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Panel del Asistente</h1>
-          <p className="text-gray-500 mt-2">Agenda diaria y asignación de citas clínicas.</p>
+          <h1 className="font-heading text-3xl font-bold text-slate-900">Panel del Asistente</h1>
+          <p className="text-slate-500 mt-1.5 text-sm font-medium">Agenda diaria y asignación de citas clínicas.</p>
         </div>
         <div className="flex items-center gap-4 self-start md:self-auto">
           {/* Selector de Dentista */}
           <div className="flex flex-col">
-            <label className="text-xs font-bold text-gray-500 mb-1">Filtrar por Odontólogo</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Filtrar por Odontólogo</label>
             <select
               value={selectedDentistId}
               onChange={(e) => setSelectedDentistId(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white text-sm font-semibold text-gray-700 transition-all"
+              className="px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white text-sm font-semibold text-slate-700 transition-all cursor-pointer"
             >
               <option value="">Todos los odontólogos</option>
               {dentists.map(d => (
@@ -188,7 +199,7 @@ export default function AssistantDashboard() {
 
           <button 
             onClick={() => setShowWizardModal(true)}
-            className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5 mt-5"
+            className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-100/50 transition-all hover:-translate-y-0.5 mt-5"
           >
             <Plus className="w-5 h-5" />
             <span>Agendar Cita</span>
@@ -200,23 +211,23 @@ export default function AssistantDashboard() {
         {/* Agenda Semanal y Resumen */}
         <div className="lg:col-span-1 space-y-6">
           {/* Summary Widget */}
-          <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-6 text-white shadow-lg shadow-indigo-200">
-            <h3 className="font-semibold text-indigo-100 mb-4">Resumen del {format(selectedDate, 'dd/MM/yyyy')}</h3>
+          <div className="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white shadow-lg shadow-indigo-100/50">
+            <h3 className="font-semibold text-slate-100 mb-4">Resumen del {format(selectedDate, 'dd/MM/yyyy')}</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                 <p className="text-3xl font-bold">{totalAppointments}</p>
-                <p className="text-xs text-indigo-100 mt-1">Citas Totales</p>
+                <p className="text-xs text-slate-200 mt-1">Citas Totales</p>
               </div>
               <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                 <p className="text-3xl font-bold">{pendingAppointments}</p>
-                <p className="text-xs text-indigo-100 mt-1">Pendientes</p>
+                <p className="text-xs text-slate-200 mt-1">Pendientes</p>
               </div>
             </div>
           </div>
 
           {/* Selector de días de la semana */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-            <h3 className="font-semibold text-gray-800 mb-4">Esta Semana</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <h3 className="font-semibold text-slate-800 mb-4">Esta Semana</h3>
             <div className="space-y-2">
               {weekDays.map(day => {
                 const isSelected = isSameDay(day, selectedDate);
@@ -227,16 +238,16 @@ export default function AssistantDashboard() {
                     onClick={() => setSelectedDate(day)}
                     className={`
                       w-full flex items-center justify-between p-3 rounded-xl text-sm font-medium transition-all
-                      ${isSelected ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'hover:bg-gray-50 text-gray-600 border border-transparent'}
+                      ${isSelected ? 'bg-slate-50 text-primary border border-slate-200' : 'hover:bg-slate-50 text-slate-650 border border-transparent'}
                     `}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isSelected ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isSelected ? 'bg-slate-200/65 text-primary font-bold' : 'bg-slate-100'}`}>
                         {format(day, 'd')}
                       </div>
                       <span className="capitalize">{format(day, 'EEEE', { locale: es })}</span>
                     </div>
-                    {isToday && <span className="w-2 h-2 rounded-full bg-blue-500"></span>}
+                    {isToday && <span className="w-2 h-2 rounded-full bg-secondary"></span>}
                   </button>
                 );
               })}
@@ -246,10 +257,10 @@ export default function AssistantDashboard() {
 
         {/* Listado de Citas */}
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 min-h-[500px]">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 min-h-[500px]">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">Citas Agendadas</h2>
-              {loading && <Loader2 className="w-5 h-5 animate-spin text-blue-600" />}
+              <h2 className="font-heading text-xl font-bold text-slate-800">Citas Agendadas</h2>
+              {loading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
             </div>
 
             {appointments.length === 0 && !loading ? (
@@ -382,7 +393,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
 
   const fetchTypes = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/public/appointment-types');
+      const res = await fetch(`${API_URL}/api/public/appointment-types`);
       const data = await res.json();
       if (res.ok) {
         setAppointmentTypes(data || []);
@@ -395,7 +406,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
 
   const fetchSlots = async (dentistId) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/public/availability?dentist_id=${dentistId}`);
+      const res = await fetch(`${API_URL}/api/public/availability?dentist_id=${dentistId}`);
       const data = await res.json();
       if (res.ok) {
         setAvailableSlots(data || []);
@@ -436,7 +447,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
     setBookingLoading(true);
     setBookingError(null);
     try {
-      const res = await fetch('http://localhost:3001/api/public/appointments', {
+      const res = await fetch(`${API_URL}/api/public/appointments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -468,19 +479,39 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   // PASO 0: Elegir Odontólogo
   const renderStep0 = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold text-gray-900 mb-2">Paso 1: Seleccionar Odontólogo</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {dentists.map(d => (
-          <button
-            key={d.id}
-            type="button"
-            onClick={() => handleDentistSelect(d)}
-            className="p-4 text-left border rounded-2xl transition-all border-gray-255 bg-white hover:border-blue-500 hover:shadow-sm"
-          >
-            <div className="font-bold text-sm text-gray-900">{d.full_name}</div>
-            <div className="text-xs text-gray-500">Cirujano Dentista</div>
-          </button>
-        ))}
+      <h3 className="font-heading text-lg font-bold text-slate-800 mb-2">Paso 1: Seleccionar Odontólogo</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {dentists.map(d => {
+          const initials = getInitials(d.full_name);
+          return (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => handleDentistSelect(d)}
+              className="p-4 text-left border rounded-2xl transition-all border-slate-150 bg-white hover:border-primary hover:shadow-md flex items-center space-x-3 group"
+            >
+              {d.logo_url ? (
+                <img 
+                  src={d.logo_url} 
+                  alt={d.full_name}
+                  className="w-11 h-11 rounded-full object-cover border border-slate-100 shadow-sm"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div className="w-11 h-11 rounded-full bg-slate-100 text-primary border border-slate-200 font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
+                  {initials}
+                </div>
+              )}
+              <div>
+                <div className="font-bold text-sm text-slate-800 group-hover:text-primary transition-colors leading-tight">{d.full_name}</div>
+                <div className="text-xs text-slate-500 font-medium tracking-wide uppercase mt-0.5">Cirujano Dentista</div>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

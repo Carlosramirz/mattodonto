@@ -1,0 +1,102 @@
+/* Mattodonto — tokens del sistema de diseño para Tailwind v4.
+   Impórtalo desde src/index.css:
+
+     @import "tailwindcss";
+     @import "./theme.css";
+
+   Con esto NO necesitas tailwind.config.js: v4 genera las utilidades
+   (bg-primary-600, rounded-2xl, shadow-md, text-ink…) desde estas variables.
+   Fuente de verdad: styles.css del sistema de diseño. */
+
+@theme {
+  /* ── Marca ─────────────────────────────────────────────────
+     primary = azul marino (paso 600) · secondary = azul medio (paso 500) */
+  --color-primary-50: #f5f8fc;
+  --color-primary-100: #eef3f9;
+  --color-primary-200: #d7e3f1;
+  --color-primary-300: #b2c7e0;
+  --color-primary-400: #7c9bc5;
+  --color-primary-500: #3f6ba0;
+  --color-primary-600: #1b3e6f;
+  --color-primary-700: #16345c;
+  --color-primary-800: #112748;
+  --color-primary-900: #0c1b31;
+  --color-primary: #1b3e6f;
+
+  --color-secondary-50: #f6fafe;
+  --color-secondary-100: #eff5fd;
+  --color-secondary-200: #dae8f8;
+  --color-secondary-300: #bad2f0;
+  --color-secondary-400: #7ba5de;
+  --color-secondary-500: #2c5fa8;
+  --color-secondary-600: #26538f;
+  --color-secondary-700: #1f4374;
+  --color-secondary-800: #183358;
+  --color-secondary-900: #11223b;
+  --color-secondary: #2c5fa8;
+
+  /* ── Neutrales del sistema (gris plata = 500) — reemplaza slate-*/
+  --color-silver-100: #f8fafc;
+  --color-silver-200: #eef2f7;
+  --color-silver-300: #dde3ec;
+  --color-silver-400: #c4ccd8;
+  --color-silver-500: #9ca3af;
+  --color-silver-600: #7a828f;
+  --color-silver-700: #5b6472;
+  --color-silver-800: #3e4653;
+  --color-silver-900: #232b36;
+  --color-silver: #9ca3af;
+  --color-accent: #9ca3af;
+
+  /* ── Ground ── un solo nombre: background (no existe background-site) */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+
+  /* ── Texto ── */
+  --color-ink: #16293f;
+  --color-ink-muted: #5b6472;
+  --color-ink-subtle: #7a828f;
+
+  /* ── Estados de cita ── apagados, clínicos; nunca green-500 / red-500 */
+  --color-success: #2f7a63;
+  --color-success-100: #eaf4f0;
+  --color-success-700: #25604e;
+  --color-warning: #9a6b1f;
+  --color-warning-100: #f8f1e3;
+  --color-warning-700: #7c5518;
+  --color-danger: #9d3b3b;
+  --color-danger-100: #f7ecec;
+  --color-danger-700: #7e2f2f;
+
+  /* ── Tipografía ── Lora para títulos (peso 600), Inter para interfaz */
+  --font-heading: "Lora", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  /* ── Radios ── xl campos · 2xl tarjetas · 3xl modales */
+  --radius-xl: 10px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* ── Sombras con tinte marino ── */
+  --shadow-sm: 0 1px 2px rgb(22 41 63 / 0.08);
+  --shadow-md: 0 4px 14px rgb(22 41 63 / 0.10);
+  --shadow-lg: 0 18px 44px rgb(22 41 63 / 0.14);
+  --shadow-xl: 0 18px 44px rgb(22 41 63 / 0.14);
+  --shadow-focus: 0 0 0 3px #d7e3f1;
+
+  /* ── Mínimo táctil ── min-h-touch / h-touch */
+  --spacing-touch: 44px;
+
+  /* ── Medida de lectura ── max-w-measure */
+  --container-measure: 62ch;
+}
+
+/* Base del documento: el ground y el texto marino del sistema. */
+@layer base {
+  body { background-color: var(--color-background); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4, h5 { font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.01em; }
+  a { color: var(--color-secondary-600); }
+  a:hover { color: var(--color-primary-800); }
+  :focus-visible { outline: 2px solid var(--color-secondary); outline-offset: 2px; }
+  ::selection { background: var(--color-primary-200); }
+}

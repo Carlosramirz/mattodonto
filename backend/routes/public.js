@@ -42,7 +42,7 @@ router.get('/dentists', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('users')
-      .select('id, full_name')
+      .select('id, full_name, logo_url')
       .eq('role', 'dentist')
       .order('full_name', { ascending: true });
 

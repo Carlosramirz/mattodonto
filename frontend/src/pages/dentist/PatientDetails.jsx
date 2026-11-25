@@ -1035,7 +1035,7 @@ export default function PatientDetails() {
                                 {rec.diagnosis_codes.map((code, idx) => (
                                   <span 
                                     key={idx} 
-                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 uppercase border border-blue-100"
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-primary uppercase border border-slate-200"
                                   >
                                     {code}
                                   </span>
@@ -1085,7 +1085,7 @@ export default function PatientDetails() {
                                 {rec.diagnosis_codes.map((code, idx) => (
                                   <span 
                                     key={idx} 
-                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 uppercase border border-blue-100"
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-primary uppercase border border-slate-200"
                                   >
                                     {code}
                                   </span>
@@ -1136,8 +1136,8 @@ export default function PatientDetails() {
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <BookOpen className="w-6 h-6 mr-3 text-blue-600" />
+            <h2 className="font-heading text-2xl font-bold text-slate-900 mb-2 flex items-center">
+              <BookOpen className="w-6 h-6 mr-3 text-primary" />
               {editingRecord ? 'Editar Sesión Clínica' : 'Registrar Sesión Clínica'}
             </h2>
             <p className="text-gray-500 mb-6 text-sm">Ingresa los antecedentes clínicos y procedimientos realizados.</p>
@@ -1338,10 +1338,10 @@ export default function PatientDetails() {
                                       });
                                     }
                                   }}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                                     isSelected
-                                      ? 'bg-blue-600 text-white shadow-sm'
-                                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                      ? 'bg-primary text-white shadow-sm'
+                                      : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
                                   }`}
                                 >
                                   {item.name}
@@ -1358,13 +1358,13 @@ export default function PatientDetails() {
 
               {/* 5. Procedimiento Realizado */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Procedimiento Realizado</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Procedimiento Realizado</label>
                 <textarea 
                   rows="2"
                   value={recordForm.procedure_performed}
                   onChange={e => setRecordForm({ ...recordForm, procedure_performed: e.target.value })}
                   placeholder="Ej. Eliminación de caries con fresa de carburo. Cavidad compatible. Obturación temporal."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
                 />
               </div>
 
@@ -1372,7 +1372,7 @@ export default function PatientDetails() {
                 <button 
                   type="button" 
                   onClick={() => setShowRecordModal(false)}
-                  className="w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all"
+                  className="w-1/2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all cursor-pointer"
                   disabled={recordFormLoading}
                 >
                   Cancelar
@@ -1380,7 +1380,7 @@ export default function PatientDetails() {
                 <button 
                   type="submit" 
                   disabled={recordFormLoading}
-                  className="w-1/2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center space-x-2"
+                  className="w-1/2 py-3 bg-primary hover:bg-secondary text-white font-bold rounded-xl shadow-lg shadow-indigo-100/50 transition-all flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   {recordFormLoading ? (
                     <>

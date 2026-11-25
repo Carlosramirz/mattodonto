@@ -172,16 +172,16 @@ export default function Patients() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-6 space-y-8 font-sans">
       {/* Cabecera */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Fichas Clínicas</h1>
-          <p className="text-gray-500 mt-2">Administración y registro de datos de pacientes.</p>
+          <h1 className="font-heading text-3xl font-bold text-slate-900">Fichas Clínicas</h1>
+          <p className="text-slate-500 mt-1.5 text-sm font-medium">Administración y registro de datos de pacientes.</p>
         </div>
         <button 
           onClick={() => { setShowModal(true); setFormError(null); setRutError(null); }}
-          className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5"
+          className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-100/50 transition-all hover:-translate-y-0.5 cursor-pointer"
         >
           <UserPlus className="w-5 h-5" />
           <span>Nueva Ficha</span>
@@ -189,48 +189,48 @@ export default function Patients() {
       </div>
 
       {/* Caja de Búsqueda */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center space-x-3">
-        <Search className="w-5 h-5 text-gray-400 shrink-0" />
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
+        <Search className="w-5 h-5 text-slate-400 shrink-0" />
         <input 
           type="text" 
           value={search}
           onChange={handleSearchChange}
           placeholder="Buscar paciente por nombre o RUT..."
-          className="w-full text-gray-800 outline-none text-sm placeholder-gray-400 bg-transparent"
+          className="w-full text-slate-800 outline-none text-sm placeholder-slate-400 bg-transparent"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="text-xs text-gray-400 hover:text-gray-600 font-bold px-2">
+          <button onClick={() => setSearch('')} className="text-xs text-slate-400 hover:text-slate-650 font-bold px-2 cursor-pointer">
             Limpiar
           </button>
         )}
       </div>
 
       {/* Listado */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-h-[400px] flex flex-col justify-between">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden min-h-[400px] flex flex-col justify-between">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-slate-50/50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 <th className="py-4 px-6">Nombre</th>
                 <th className="py-4 px-6">RUT</th>
                 <th className="py-4 px-6">Teléfono</th>
                 <th className="py-4 px-6">Previsión</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
+            <tbody className="divide-y divide-slate-100 text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="py-20 text-center text-gray-400">
-                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600 mb-2" />
+                  <td colSpan="4" className="py-20 text-center text-slate-400">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary mb-2" />
                     Cargando listado de pacientes...
                   </td>
                 </tr>
               ) : patients.length === 0 ? (
                 <tr>
                   <td colSpan="4" className="py-20 text-center">
-                    <User className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500 font-medium">No se encontraron pacientes registrados.</p>
-                    <p className="text-gray-400 text-xs mt-1">Crea un registro utilizando el botón "Nueva Ficha".</p>
+                    <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                    <p className="text-slate-550 font-medium">No se encontraron pacientes registrados.</p>
+                    <p className="text-slate-400 text-xs mt-1">Crea un registro utilizando el botón "Nueva Ficha".</p>
                   </td>
                 </tr>
               ) : (
@@ -238,15 +238,15 @@ export default function Patients() {
                   <tr 
                     key={patient.id} 
                     onClick={() => navigate(`/${basePath}/patients/${patient.id}`)}
-                    className="hover:bg-blue-50/20 cursor-pointer transition-all group"
+                    className="hover:bg-slate-50/70 cursor-pointer transition-all group"
                   >
-                    <td className="py-4 px-6 font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    <td className="py-4 px-6 font-bold text-slate-800 group-hover:text-primary transition-colors">
                       {patient.full_name}
                     </td>
-                    <td className="py-4 px-6 text-gray-600 font-mono text-xs">{patient.rut}</td>
-                    <td className="py-4 px-6 text-gray-600">
+                    <td className="py-4 px-6 text-slate-600 font-mono text-xs">{patient.rut}</td>
+                    <td className="py-4 px-6 text-slate-600">
                       <div className="flex items-center space-x-1.5">
-                        <Phone className="w-3.5 h-3.5 text-gray-400" />
+                        <Phone className="w-3.5 h-3.5 text-slate-400" />
                         <span>{patient.phone || 'Sin registrar'}</span>
                       </div>
                     </td>
@@ -257,7 +257,7 @@ export default function Patients() {
                             FONASA
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 uppercase">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-650 uppercase">
                             {patient.prevision}
                             {patient.prevision_detail && ` (${patient.prevision_detail})`}
                           </span>
@@ -273,15 +273,15 @@ export default function Patients() {
 
         {/* Paginación */}
         {totalPages > 1 && (
-          <div className="p-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-xs text-gray-500 font-medium">
+          <div className="p-4 border-t border-slate-100 flex items-center justify-between">
+            <span className="text-xs text-slate-500 font-medium">
               Mostrando página {page} de {totalPages} ({totalCount} pacientes)
             </span>
             <div className="flex space-x-2">
               <button 
                 onClick={() => setPage(p => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>

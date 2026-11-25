@@ -92,10 +92,10 @@ export default function Availability() {
   const nextWeek = () => setCurrentDate(addWeeks(currentDate, 1));
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-6 space-y-8 font-sans">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Gestión de Disponibilidad</h1>
-        <p className="text-gray-500 mt-2">Configura tus horarios de atención semanales.</p>
+        <h1 className="font-heading text-3xl font-bold text-slate-900">Gestión de Disponibilidad</h1>
+        <p className="text-slate-500 mt-1.5 text-sm font-medium">Configura tus horarios de atención semanales.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -104,24 +104,24 @@ export default function Availability() {
         <div className="lg:col-span-1 space-y-6">
           
           {/* Calendar */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-800 capitalize">
+              <h2 className="font-semibold text-slate-800 capitalize text-sm uppercase tracking-wider">
                 {format(currentDate, 'MMMM yyyy', { locale: es })}
               </h2>
               <div className="flex space-x-2">
-                <button onClick={prevWeek} className="p-1.5 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
-                  <ChevronLeft className="w-5 h-5" />
+                <button onClick={prevWeek} className="p-1.5 rounded-xl hover:bg-slate-50 text-slate-650 transition-colors cursor-pointer border border-slate-100">
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
-                <button onClick={nextWeek} className="p-1.5 rounded-md hover:bg-gray-100 text-gray-600 transition-colors">
-                  <ChevronRight className="w-5 h-5" />
+                <button onClick={nextWeek} className="p-1.5 rounded-xl hover:bg-slate-50 text-slate-650 transition-colors cursor-pointer border border-slate-100">
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
             
             <div className="grid grid-cols-7 gap-2">
               {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
-                <div key={day} className="text-center text-xs font-medium text-gray-500 mb-2">
+                <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
                   {day}
                 </div>
               ))}
@@ -133,9 +133,9 @@ export default function Availability() {
                     key={day.toString()}
                     onClick={() => setSelectedDate(day)}
                     className={`
-                      p-2 rounded-xl text-sm font-medium flex flex-col items-center justify-center transition-all duration-200
-                      ${isSelected ? 'bg-blue-600 text-white shadow-md shadow-blue-200' : 'hover:bg-gray-50 text-gray-700'}
-                      ${isToday && !isSelected ? 'text-blue-600 font-bold' : ''}
+                      p-2 rounded-xl text-sm font-medium flex flex-col items-center justify-center transition-all duration-200 cursor-pointer
+                      ${isSelected ? 'bg-primary text-white shadow-md shadow-indigo-100/50 font-bold' : 'hover:bg-slate-50 text-slate-700'}
+                      ${isToday && !isSelected ? 'text-secondary font-bold' : ''}
                     `}
                   >
                     <span>{format(day, 'd')}</span>
@@ -146,31 +146,31 @@ export default function Availability() {
           </div>
 
           {/* Generator Form */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
             <div className="flex items-center space-x-2 mb-4">
-              <Clock className="w-5 h-5 text-blue-500" />
-              <h3 className="font-semibold text-gray-800">Generar Bloques</h3>
+              <Clock className="w-5 h-5 text-secondary" />
+              <h3 className="font-semibold text-slate-800 text-sm uppercase tracking-wider font-bold">Generar Bloques</h3>
             </div>
             
-            <form onSubmit={generateSlots} className="space-y-4">
+            <form onSubmit={generateSlots} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Hora Inicio</label>
+                  <label className="block text-slate-650 font-bold mb-1">Hora Inicio</label>
                   <input 
                     type="time" 
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
-                    className="w-full text-sm border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                     required 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Hora Fin</label>
+                  <label className="block text-slate-650 font-bold mb-1">Hora Fin</label>
                   <input 
                     type="time" 
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
-                    className="w-full text-sm border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                     required 
                   />
                 </div>
@@ -178,22 +178,22 @@ export default function Availability() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Duración Cita (min)</label>
+                  <label className="block text-slate-650 font-bold mb-1">Duración Cita (min)</label>
                   <input 
                     type="number" 
                     value={durationMinutes}
                     onChange={(e) => setDurationMinutes(e.target.value)}
-                    className="w-full text-sm border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                     required 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Tiempo entre citas (min)</label>
+                  <label className="block text-slate-650 font-bold mb-1">Tiempo entre citas (min)</label>
                   <input 
                     type="number" 
                     value={bufferMinutes}
                     onChange={(e) => setBufferMinutes(e.target.value)}
-                    className="w-full text-sm border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                     required 
                   />
                 </div>
@@ -201,7 +201,7 @@ export default function Availability() {
 
               <button 
                 type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition-colors mt-2"
+                className="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer mt-2 shadow-md hover:shadow-lg shadow-indigo-100/50"
               >
                 Generar Disponibilidad
               </button>
@@ -211,22 +211,22 @@ export default function Availability() {
 
         {/* Right Column: Slots List */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-full min-h-[500px]">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full min-h-[500px]">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">
+              <h2 className="font-heading text-xl font-bold text-slate-800">
                 Bloques para el {format(selectedDate, 'dd/MM/yyyy')}
               </h2>
             </div>
 
             {loading ? (
               <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
             ) : slots.length === 0 ? (
               <div className="text-center py-16 px-4">
-                <CalendarIcon className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-                <p className="text-gray-500 font-medium">No hay bloques configurados para este día.</p>
-                <p className="text-sm text-gray-400 mt-1">Usa el formulario para generar tu disponibilidad.</p>
+                <CalendarIcon className="mx-auto h-12 w-12 text-slate-200 mb-4" />
+                <p className="text-slate-500 font-medium">No hay bloques configurados para este día.</p>
+                <p className="text-sm text-slate-400 mt-1">Usa el formulario para generar tu disponibilidad.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -236,27 +236,27 @@ export default function Availability() {
                     <div 
                       key={slot.id} 
                       className={`
-                        p-4 rounded-xl border flex items-center justify-between transition-all
-                        ${!slot.is_active ? 'bg-gray-50 border-gray-200 opacity-60' : 'bg-white border-gray-200 hover:border-blue-300 shadow-sm'}
-                        ${isBooked ? 'border-l-4 border-l-amber-400' : ''}
+                        p-4 rounded-2xl border flex items-center justify-between transition-all gap-4
+                        ${!slot.is_active ? 'bg-slate-50 border-slate-150 opacity-70' : 'bg-white border-slate-100 hover:border-slate-250 shadow-sm'}
+                        ${isBooked ? 'border-l-4 border-l-amber-500' : ''}
                       `}
                     >
                       <div>
                         <div className="flex items-center space-x-2">
-                          <span className={`font-bold ${!slot.is_active ? 'text-gray-500' : 'text-gray-900'}`}>
+                          <span className={`font-bold ${!slot.is_active ? 'text-slate-450 line-through' : 'text-slate-800'}`}>
                             {slot.start_time.substring(0, 5)} - {slot.end_time.substring(0, 5)}
                           </span>
                           {isBooked && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">
                               Ocupado
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-[10px] text-slate-500 mt-1 font-medium">
                           Tiempo entre citas: {slot.buffer_minutes} min
                         </p>
                         {isBooked && slot.appointment && (
-                          <p className="text-xs text-gray-700 mt-1 truncate max-w-[150px]">
+                          <p className="text-xs text-slate-700 font-semibold mt-1.5 truncate max-w-[150px]">
                             Paciente: {slot.appointment.patient_name}
                           </p>
                         )}
@@ -266,12 +266,12 @@ export default function Availability() {
                         onClick={() => toggleSlot(slot.id)}
                         disabled={isBooked}
                         className={`
-                          p-2 rounded-full transition-colors focus:outline-none
+                          p-2 rounded-full transition-colors focus:outline-none cursor-pointer
                           ${isBooked 
-                            ? 'bg-gray-100 text-gray-300 cursor-not-allowed' 
+                            ? 'bg-slate-100 text-slate-300 cursor-not-allowed' 
                             : slot.is_active 
-                              ? 'bg-green-100 text-green-600 hover:bg-green-200' 
-                              : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                              ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' 
+                              : 'bg-slate-200 text-slate-550 hover:bg-slate-300'
                           }
                         `}
                         title={isBooked ? "No se puede desactivar un bloque ocupado" : slot.is_active ? "Desactivar" : "Activar"}

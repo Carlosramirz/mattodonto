@@ -40,13 +40,13 @@ export function AuthProvider({ children }) {
     try {
       const { data, error } = await supabase
         .from('users')
-        .select('role, full_name')
+        .select('role, full_name, logo_url')
         .eq('id', authUser.id)
         .single();
 
       if (error) throw error;
       
-      setUser({ ...authUser, full_name: data.full_name });
+      setUser({ ...authUser, full_name: data.full_name, logo_url: data.logo_url });
       setRole(data.role);
     } catch (err) {
       console.error('Error fetching user profile:', err);
