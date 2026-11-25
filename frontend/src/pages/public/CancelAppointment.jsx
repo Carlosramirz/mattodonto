@@ -202,9 +202,9 @@ export default function CancelAppointment() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="flex flex-col items-center space-y-4 text-gray-500">
-          <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      <div className="min-h-screen flex items-center justify-center bg-silver-100 p-4">
+        <div className="flex flex-col items-center space-y-4 text-ink-subtle">
+          <Loader2 className="w-10 h-10 animate-spin text-secondary-600" />
           <p>Verificando enlace...</p>
         </div>
       </div>
@@ -213,16 +213,16 @@ export default function CancelAppointment() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center border border-gray-100 animate-in zoom-in-95 duration-500">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-500" />
+      <div className="min-h-screen flex items-center justify-center bg-silver-100 p-4">
+        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center border border-silver-200 animate-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-success" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Cita Cancelada</h2>
-          <p className="text-gray-600 mb-8">
+          <h2 className="text-2xl font-bold text-ink mb-2">Cita Cancelada</h2>
+          <p className="text-ink-muted mb-8">
             Hemos liberado tu horario correctamente. El odontólogo ha sido notificado.
           </p>
-          <Link to="/" className="inline-flex flex-col text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
+          <Link to="/" className="inline-flex flex-col text-sm text-secondary-600 hover:text-primary-800 font-medium transition-colors">
             Volver a agendar
           </Link>
         </div>
@@ -231,19 +231,19 @@ export default function CancelAppointment() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl max-w-lg w-full border border-gray-100 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-silver-100 p-4">
+      <div className="bg-white p-6 sm:p-10 rounded-3xl shadow-xl max-w-lg w-full border border-silver-200 relative overflow-hidden">
         
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CalendarX className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 bg-danger-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CalendarX className="w-8 h-8 text-danger" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Cancelar Cita</h1>
-          <p className="text-gray-500 mt-2">Gestión y anulación de citas médicas en Mattodonto.</p>
+          <h1 className="text-2xl font-bold text-ink">Cancelar Cita</h1>
+          <p className="text-ink-subtle mt-2">Gestión y anulación de citas médicas en Mattodonto.</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start border border-red-100 text-sm">
+          <div className="bg-danger-100 text-danger-700 p-4 rounded-xl mb-6 flex items-start border border-danger/20 text-sm">
             <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -252,17 +252,17 @@ export default function CancelAppointment() {
         {/* Flujo 1: Cancelación por Token (si viene en la URL) */}
         {token && appointment && !error && !showRutForm && (
           <div className="space-y-6">
-            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-3">
+            <div className="bg-silver-100 border border-silver-300 rounded-2xl p-5 space-y-3">
               <div>
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Paciente</p>
-                <p className="font-semibold text-gray-900">{appointment.patient_name}</p>
+                <p className="text-xs text-ink-subtle font-medium uppercase tracking-wider mb-1">Paciente</p>
+                <p className="font-semibold text-ink">{appointment.patient_name}</p>
               </div>
               {appointment.date && appointment.start_time && (
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Fecha y Hora</p>
-                  <p className="font-semibold text-gray-900 capitalize">
+                  <p className="text-xs text-ink-subtle font-medium uppercase tracking-wider mb-1">Fecha y Hora</p>
+                  <p className="font-semibold text-ink capitalize">
                     {format(parseISO(appointment.date), "EEEE d 'de' MMMM", { locale: es })}
-                    <span className="font-bold text-blue-600 ml-2">
+                    <span className="font-bold text-secondary-600 ml-2">
                       {appointment.start_time.substring(0, 5)} hrs
                     </span>
                   </p>
@@ -271,25 +271,25 @@ export default function CancelAppointment() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/" className="w-full sm:w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all text-center">
+              <Link to="/" className="w-full sm:w-1/2 py-3 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-xl transition-all text-center">
                 No, mantener cita
               </Link>
               <button 
                 onClick={handleCancel}
                 disabled={canceling}
                 className={`
-                  w-full sm:w-1/2 py-3 text-white font-bold rounded-xl shadow-lg transition-all
-                  ${canceling ? 'bg-red-300 cursor-not-allowed shadow-none' : 'bg-red-600 hover:bg-red-700 hover:-translate-y-0.5 shadow-red-200'}
+                  w-full sm:w-1/2 py-3 text-white font-bold rounded-xl shadow-md transition-all
+                  ${canceling ? 'bg-danger/40 cursor-not-allowed shadow-none' : 'bg-danger hover:bg-danger-700'}
                 `}
               >
                 {canceling ? 'Procesando...' : 'Sí, cancelar cita'}
               </button>
             </div>
 
-            <div className="pt-4 border-t border-gray-100 text-center">
+            <div className="pt-4 border-t border-silver-200 text-center">
               <button 
                 onClick={() => setShowRutForm(true)} 
-                className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                className="text-sm font-medium text-secondary-600 hover:text-primary-800 transition-colors"
               >
                 ¿No tienes tu link de cancelación? Anula con tu RUT y email
               </button>
@@ -300,30 +300,30 @@ export default function CancelAppointment() {
         {/* Flujo 2: Cancelación por RUT + Email (si no hay token, falló, o hicieron clic en el enlace) */}
         {((!token || !appointment || error || showRutForm) && multipleAppointments.length === 0) && (
           <div className="space-y-6">
-            <div className="border-b border-gray-100 pb-4 mb-4 text-center">
-              <p className="text-sm text-gray-600">Ingresa tus datos para buscar y anular tus citas pendientes.</p>
+            <div className="border-b border-silver-200 pb-4 mb-4 text-center">
+              <p className="text-sm text-ink-muted">Ingresa tus datos para buscar y anular tus citas pendientes.</p>
             </div>
 
             <form onSubmit={handleRutSearch} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">RUT del Paciente</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">RUT del Paciente</label>
                 <input 
                   type="text" required
                   value={rut} onChange={handleRutChange}
-                  className={`w-full px-4 py-3 rounded-xl border ${rutFormError ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 focus:border-transparent transition-all outline-none`} 
+                  className={`w-full px-4 py-3 rounded-xl border ${rutFormError ? 'border-danger' : 'border-silver-300'} focus:outline-none focus:border-secondary focus:shadow-focus transition-all`} 
                   placeholder="Ej. 12.345.678-5"
                 />
                 {rutFormError && (
-                  <p className="text-xs text-red-600 mt-1 font-medium">{rutFormError}</p>
+                  <p className="text-xs text-danger mt-1 font-medium">{rutFormError}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Correo Electrónico</label>
                 <input 
                   type="email" required
                   value={email} onChange={e => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all" 
                   placeholder="ejemplo@correo.com"
                 />
               </div>
@@ -331,8 +331,8 @@ export default function CancelAppointment() {
               <button 
                 type="submit"
                 disabled={cancelingRut}
-                className={`w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all mt-4 flex items-center justify-center space-x-2 ${
-                  cancelingRut ? 'bg-blue-400 cursor-not-allowed shadow-none' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-200'
+                className={`w-full py-4 text-white font-bold rounded-xl shadow-md transition-all mt-4 flex items-center justify-center space-x-2 ${
+                  cancelingRut ? 'bg-primary-400 cursor-not-allowed shadow-none' : 'bg-primary hover:bg-primary-700'
                 }`}
               >
                 {cancelingRut ? (
@@ -353,7 +353,7 @@ export default function CancelAppointment() {
               <div className="pt-2 text-center">
                 <button 
                   onClick={() => { setShowRutForm(false); setError(null); }} 
-                  className="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                  className="text-sm font-medium text-ink-subtle hover:text-ink-muted transition-colors"
                 >
                   Volver al flujo de cancelación por link
                 </button>
@@ -365,8 +365,8 @@ export default function CancelAppointment() {
         {/* Listado de Citas Múltiples/Única encontradas por RUT + Email */}
         {multipleAppointments.length > 0 && (
           <div className="space-y-6">
-            <div className="border-b border-gray-100 pb-4 text-center">
-              <p className="text-sm text-gray-600">
+            <div className="border-b border-silver-200 pb-4 text-center">
+              <p className="text-sm text-ink-muted">
                 {multipleAppointments.length === 1 
                   ? 'Hemos encontrado la siguiente cita activa. Confirma su cancelación:' 
                   : 'Encontramos múltiples citas activas. Selecciona cuál deseas cancelar:'}
@@ -379,8 +379,8 @@ export default function CancelAppointment() {
                   key={appt.id} 
                   className={`flex items-start p-4 rounded-xl border cursor-pointer transition-all ${
                     selectedAppointmentId === appt.id 
-                      ? 'border-blue-500 bg-blue-50/50 shadow-sm' 
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary bg-primary-100/50 shadow-sm' 
+                      : 'border-silver-300 hover:border-silver-400'
                   }`}
                 >
                   {multipleAppointments.length > 1 && (
@@ -390,15 +390,15 @@ export default function CancelAppointment() {
                       value={appt.id}
                       checked={selectedAppointmentId === appt.id}
                       onChange={() => setSelectedAppointmentId(appt.id)}
-                      className="mt-1.5 mr-3 text-blue-600 focus:ring-blue-500"
+                      className="mt-1.5 mr-3 text-secondary-600 focus:outline-none focus:border-secondary focus:shadow-focus"
                     />
                   )}
                   <div className="text-sm">
-                    <p className="font-bold text-gray-900 capitalize">
+                    <p className="font-bold text-ink capitalize">
                       {format(parseISO(appt.date), "EEEE d 'de' MMMM, yyyy", { locale: es })}
                     </p>
-                    <p className="text-blue-600 font-bold mt-0.5">{appt.start_time.substring(0, 5)} hrs</p>
-                    <p className="text-xs text-gray-500 mt-1 font-medium">Tipo: {appt.appointment_type}</p>
+                    <p className="text-secondary-600 font-bold mt-0.5">{appt.start_time.substring(0, 5)} hrs</p>
+                    <p className="text-xs text-ink-subtle mt-1 font-medium">Tipo: {appt.appointment_type}</p>
                   </div>
                 </label>
               ))}
@@ -407,7 +407,7 @@ export default function CancelAppointment() {
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button 
                 onClick={() => { setMultipleAppointments([]); setSelectedAppointmentId(''); setError(null); }}
-                className="w-full sm:w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all text-center"
+                className="w-full sm:w-1/2 py-3 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-xl transition-all text-center"
               >
                 Volver a buscar
               </button>
@@ -415,8 +415,8 @@ export default function CancelAppointment() {
                 onClick={handleRutCancelSpecific}
                 disabled={cancelingRut}
                 className={`
-                  w-full sm:w-1/2 py-3 text-white font-bold rounded-xl shadow-lg transition-all
-                  ${cancelingRut ? 'bg-red-300 cursor-not-allowed shadow-none' : 'bg-red-600 hover:bg-red-700 hover:-translate-y-0.5 shadow-red-200'}
+                  w-full sm:w-1/2 py-3 text-white font-bold rounded-xl shadow-md transition-all
+                  ${cancelingRut ? 'bg-danger/40 cursor-not-allowed shadow-none' : 'bg-danger hover:bg-danger-700'}
                 `}
               >
                 {cancelingRut ? 'Cancelando...' : 'Confirmar Cancelación'}

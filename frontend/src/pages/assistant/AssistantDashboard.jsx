@@ -178,17 +178,17 @@ export default function AssistantDashboard() {
     <div className="max-w-6xl mx-auto p-6 space-y-8 font-sans">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="font-heading text-3xl font-bold text-slate-900">Panel del Asistente</h1>
-          <p className="text-slate-500 mt-1.5 text-sm font-medium">Agenda diaria y asignación de citas clínicas.</p>
+          <h1 className="font-heading text-3xl font-semibold text-ink">Panel del Asistente</h1>
+          <p className="text-ink-subtle mt-1.5 text-sm font-medium">Agenda diaria y asignación de citas clínicas.</p>
         </div>
         <div className="flex items-center gap-4 self-start md:self-auto">
           {/* Selector de Dentista */}
           <div className="flex flex-col">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Filtrar por Odontólogo</label>
+            <label className="text-[10px] font-bold uppercase tracking-wider text-ink-subtle mb-1">Filtrar por Odontólogo</label>
             <select
               value={selectedDentistId}
               onChange={(e) => setSelectedDentistId(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white text-sm font-semibold text-slate-700 transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus bg-white text-sm font-semibold text-ink-muted transition-all cursor-pointer"
             >
               <option value="">Todos los odontólogos</option>
               {dentists.map(d => (
@@ -199,7 +199,7 @@ export default function AssistantDashboard() {
 
           <button 
             onClick={() => setShowWizardModal(true)}
-            className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-100/50 transition-all hover:-translate-y-0.5 mt-5"
+            className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-md transition-all mt-5"
           >
             <Plus className="w-5 h-5" />
             <span>Agendar Cita</span>
@@ -211,23 +211,23 @@ export default function AssistantDashboard() {
         {/* Agenda Semanal y Resumen */}
         <div className="lg:col-span-1 space-y-6">
           {/* Summary Widget */}
-          <div className="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white shadow-lg shadow-indigo-100/50">
-            <h3 className="font-semibold text-slate-100 mb-4">Resumen del {format(selectedDate, 'dd/MM/yyyy')}</h3>
+          <div className="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white shadow-md">
+            <h3 className="font-semibold text-primary-200 mb-4">Resumen del {format(selectedDate, 'dd/MM/yyyy')}</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                 <p className="text-3xl font-bold">{totalAppointments}</p>
-                <p className="text-xs text-slate-200 mt-1">Citas Totales</p>
+                <p className="text-xs text-primary-200 mt-1">Citas Totales</p>
               </div>
               <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
                 <p className="text-3xl font-bold">{pendingAppointments}</p>
-                <p className="text-xs text-slate-200 mt-1">Pendientes</p>
+                <p className="text-xs text-primary-200 mt-1">Pendientes</p>
               </div>
             </div>
           </div>
 
           {/* Selector de días de la semana */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-            <h3 className="font-semibold text-slate-800 mb-4">Esta Semana</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-silver-200 p-5">
+            <h3 className="font-semibold text-ink mb-4">Esta Semana</h3>
             <div className="space-y-2">
               {weekDays.map(day => {
                 const isSelected = isSameDay(day, selectedDate);
@@ -238,11 +238,11 @@ export default function AssistantDashboard() {
                     onClick={() => setSelectedDate(day)}
                     className={`
                       w-full flex items-center justify-between p-3 rounded-xl text-sm font-medium transition-all
-                      ${isSelected ? 'bg-slate-50 text-primary border border-slate-200' : 'hover:bg-slate-50 text-slate-650 border border-transparent'}
+                      ${isSelected ? 'bg-silver-100 text-primary border border-silver-300' : 'hover:bg-silver-100 text-ink-muted border border-transparent'}
                     `}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isSelected ? 'bg-slate-200/65 text-primary font-bold' : 'bg-slate-100'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isSelected ? 'bg-silver-300/65 text-primary font-bold' : 'bg-silver-200'}`}>
                         {format(day, 'd')}
                       </div>
                       <span className="capitalize">{format(day, 'EEEE', { locale: es })}</span>
@@ -257,16 +257,16 @@ export default function AssistantDashboard() {
 
         {/* Listado de Citas */}
         <div className="lg:col-span-3">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 min-h-[500px]">
+          <div className="bg-white rounded-2xl shadow-sm border border-silver-200 p-6 min-h-[500px]">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading text-xl font-bold text-slate-800">Citas Agendadas</h2>
+              <h2 className="font-heading text-xl font-semibold text-ink">Citas Agendadas</h2>
               {loading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
             </div>
 
             {appointments.length === 0 && !loading ? (
               <div className="text-center py-20">
-                <CalendarIcon className="mx-auto h-16 w-16 text-gray-200 mb-4" />
-                <p className="text-gray-500 font-medium text-lg">No hay citas en este día.</p>
+                <CalendarIcon className="mx-auto h-16 w-16 text-silver-400 mb-4" />
+                <p className="text-ink-subtle font-medium text-lg">No hay citas en este día.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -275,28 +275,28 @@ export default function AssistantDashboard() {
                     key={app.id} 
                     className={`
                       p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between transition-all gap-4
-                      ${app.status === 'confirmed' ? 'bg-green-50/50 border-green-100' : app.status === 'cancelled' ? 'bg-red-50/30 border-red-100 opacity-70' : 'bg-white border-gray-100 shadow-sm'}
+                      ${app.status === 'confirmed' ? 'bg-success-100/50 border-success/20' : app.status === 'cancelled' ? 'bg-danger-100/30 border-danger/20 opacity-70' : 'bg-white border-silver-200 shadow-sm'}
                     `}
                   >
                     <div className="flex items-start space-x-4">
                       {/* Time Badge */}
-                      <div className="bg-gray-100 text-gray-800 font-bold px-3 py-2 rounded-lg text-sm whitespace-nowrap text-center">
+                      <div className="bg-silver-200 text-ink font-bold px-3 py-2 rounded-lg text-sm whitespace-nowrap text-center">
                         {app.start_time.substring(0, 5)}<br/>
-                        <span className="text-xs font-normal text-gray-500">{app.end_time.substring(0, 5)}</span>
+                        <span className="text-xs font-normal text-ink-subtle">{app.end_time.substring(0, 5)}</span>
                       </div>
                       
                       {/* Patient Info */}
                       <div className="space-y-1 mt-1 sm:mt-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <User className="w-4 h-4 text-gray-400" />
-                          <span className="font-bold text-gray-900">{app.patient_name}</span>
+                          <User className="w-4 h-4 text-ink-subtle" />
+                          <span className="font-bold text-ink">{app.patient_name}</span>
                           {app.status === 'confirmed' && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-success-100 text-success-700 uppercase">
                               Confirmada
                             </span>
                           )}
                           {app.status === 'cancelled' && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-700 uppercase">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-danger-100 text-danger-700 uppercase">
                               Cancelada
                             </span>
                           )}
@@ -308,7 +308,7 @@ export default function AssistantDashboard() {
                     {app.status !== 'cancelled' && (
                       <button
                         onClick={() => handleCancelAppointment(app.id)}
-                        className="text-xs font-bold text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3.5 py-2 rounded-xl transition-all self-end sm:self-auto"
+                        className="text-xs font-bold text-danger hover:text-danger-700 bg-danger-100 hover:bg-danger/20 px-3.5 py-2 rounded-xl transition-all self-end sm:self-auto"
                       >
                         Cancelar Cita
                       </button>
@@ -327,7 +327,7 @@ export default function AssistantDashboard() {
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-200">
             <button 
               onClick={() => setShowWizardModal(false)}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all"
+              className="absolute top-4 right-4 p-2 text-ink-subtle hover:text-ink-muted rounded-full hover:bg-silver-200 transition-all"
             >
               <X className="w-5 h-5" />
             </button>
@@ -479,7 +479,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   // PASO 0: Elegir Odontólogo
   const renderStep0 = () => (
     <div className="space-y-4">
-      <h3 className="font-heading text-lg font-bold text-slate-800 mb-2">Paso 1: Seleccionar Odontólogo</h3>
+      <h3 className="font-heading text-lg font-semibold text-ink mb-2">Paso 1: Seleccionar Odontólogo</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {dentists.map(d => {
           const initials = getInitials(d.full_name);
@@ -488,26 +488,26 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
               key={d.id}
               type="button"
               onClick={() => handleDentistSelect(d)}
-              className="p-4 text-left border rounded-2xl transition-all border-slate-150 bg-white hover:border-primary hover:shadow-md flex items-center space-x-3 group"
+              className="p-4 text-left border rounded-2xl transition-all border-silver-300 bg-white hover:border-primary hover:shadow-md flex items-center space-x-3 group"
             >
               {d.logo_url ? (
                 <img 
                   src={d.logo_url} 
                   alt={d.full_name}
-                  className="w-11 h-11 rounded-full object-cover border border-slate-100 shadow-sm"
+                  className="w-11 h-11 rounded-full object-cover border border-silver-200 shadow-sm"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.style.display = 'none';
                   }}
                 />
               ) : (
-                <div className="w-11 h-11 rounded-full bg-slate-100 text-primary border border-slate-200 font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
+                <div className="w-11 h-11 rounded-full bg-silver-200 text-primary border border-silver-300 font-bold flex items-center justify-center text-sm shadow-sm shrink-0">
                   {initials}
                 </div>
               )}
               <div>
-                <div className="font-bold text-sm text-slate-800 group-hover:text-primary transition-colors leading-tight">{d.full_name}</div>
-                <div className="text-xs text-slate-500 font-medium tracking-wide uppercase mt-0.5">Cirujano Dentista</div>
+                <div className="font-bold text-sm text-ink group-hover:text-primary transition-colors leading-tight">{d.full_name}</div>
+                <div className="text-xs text-ink-subtle font-medium tracking-wide uppercase mt-0.5">Cirujano Dentista</div>
               </div>
             </button>
           );
@@ -520,12 +520,12 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   const renderStep1 = () => (
     <div className="space-y-4">
       {!initialDentistId && (
-        <button onClick={() => setStep(0)} className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800">
+        <button onClick={() => setStep(0)} className="flex items-center text-xs font-semibold text-secondary-600 hover:text-primary-800">
           <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Volver a odontólogos
         </button>
       )}
-      <h3 className="text-lg font-bold text-gray-900">Paso 2: Tipo de Cita</h3>
-      <p className="text-xs text-gray-500">Odontólogo: <strong>Dr(a). {selectedDentist?.full_name}</strong></p>
+      <h3 className="text-lg font-bold text-ink">Paso 2: Tipo de Cita</h3>
+      <p className="text-xs text-ink-subtle">Odontólogo: <strong>Dr(a). {selectedDentist?.full_name}</strong></p>
       <div className="space-y-2">
         {appointmentTypes.map(t => (
           <button
@@ -533,18 +533,18 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
             type="button"
             onClick={() => setSelectedType(t)}
             className={`w-full p-4 text-left border rounded-2xl transition-all ${
-              selectedType?.id === t.id ? 'border-blue-600 bg-blue-50/50' : 'border-gray-200'
+              selectedType?.id === t.id ? 'border-primary bg-primary-100/50' : 'border-silver-300'
             }`}
           >
             <div className="font-bold text-sm">{t.name}</div>
-            <div className="text-xs text-gray-500 mt-1">Duración: {t.duration_minutes} min</div>
+            <div className="text-xs text-ink-subtle mt-1">Duración: {t.duration_minutes} min</div>
           </button>
         ))}
       </div>
       <button
         onClick={() => setStep(2)}
         disabled={!selectedType}
-        className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-blue-700 transition-colors disabled:opacity-50 mt-4"
+        className="w-full py-3 bg-primary text-white font-bold rounded-xl text-xs hover:bg-primary-700 transition-colors disabled:opacity-50 mt-4"
       >
         Continuar
       </button>
@@ -585,8 +585,8 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
               setStep(3);
             }}
             className={`p-2.5 flex flex-col items-center justify-center rounded-xl text-xs transition-all border ${
-              isDisabled ? 'text-gray-300 border-transparent cursor-not-allowed' : 'hover:border-blue-300 hover:bg-blue-50/10'
-            } ${isSelected ? 'bg-blue-600 text-white font-bold shadow-sm' : ''}`}
+              isDisabled ? 'text-silver-400 border-transparent cursor-not-allowed' : 'hover:border-primary-300 hover:bg-primary-100/10'
+            } ${isSelected ? 'bg-primary text-white font-bold shadow-sm' : ''}`}
           >
             <span>{format(cloneDay, 'd')}</span>
           </button>
@@ -603,20 +603,20 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
 
     return (
       <div className="space-y-4">
-        <button onClick={() => setStep(1)} className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800">
+        <button onClick={() => setStep(1)} className="flex items-center text-xs font-semibold text-secondary-600 hover:text-primary-800">
           <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Volver a tipo de cita
         </button>
-        <h3 className="text-lg font-bold text-gray-900">Paso 3: Elegir Fecha</h3>
-        <p className="text-xs text-gray-500">
+        <h3 className="text-lg font-bold text-ink">Paso 3: Elegir Fecha</h3>
+        <p className="text-xs text-ink-subtle">
           Dr(a). {selectedDentist?.full_name} • Tipo: {selectedType?.name}
         </p>
-        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+        <div className="bg-silver-100 p-4 rounded-2xl border border-silver-200">
           <div className="flex justify-between items-center mb-3">
             <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-1 border bg-white rounded-lg"><ChevronLeft className="w-4 h-4"/></button>
             <span className="font-bold text-xs capitalize">{format(currentMonth, 'MMMM yyyy', { locale: es })}</span>
             <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-1 border bg-white rounded-lg"><ChevronRight className="w-4 h-4"/></button>
           </div>
-          <div className="grid grid-cols-7 gap-1 mb-2 text-center text-[10px] font-bold text-gray-400">
+          <div className="grid grid-cols-7 gap-1 mb-2 text-center text-[10px] font-bold text-ink-subtle">
             {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(n => <div key={n}>{n}</div>)}
           </div>
           <div className="space-y-1">{rows}</div>
@@ -632,11 +632,11 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
 
     return (
       <div className="space-y-4">
-        <button onClick={() => setStep(2)} className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800">
+        <button onClick={() => setStep(2)} className="flex items-center text-xs font-semibold text-secondary-600 hover:text-primary-800">
           <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Volver al calendario
         </button>
-        <h3 className="text-lg font-bold text-gray-900">Paso 4: Horarios Disponibles</h3>
-        <p className="text-xs text-gray-500">
+        <h3 className="text-lg font-bold text-ink">Paso 4: Horarios Disponibles</h3>
+        <p className="text-xs text-ink-subtle">
           Fecha: {format(selectedDate, "dd 'de' MMMM", { locale: es })} con el Dr(a). {selectedDentist?.full_name}
         </p>
         <div className="grid grid-cols-3 gap-2.5">
@@ -647,7 +647,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
                 setSelectedSlot(slot);
                 setStep(4);
               }}
-              className="p-3 border-2 border-gray-200 hover:border-blue-500 rounded-xl font-bold text-sm bg-white"
+              className="p-3 border-2 border-silver-300 hover:border-primary rounded-xl font-bold text-sm bg-white"
             >
               {slot.start_time.substring(0, 5)}
             </button>
@@ -660,10 +660,10 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   // PASO 4: Formulario Paciente
   const renderStep4 = () => (
     <div className="space-y-4">
-      <button onClick={() => setStep(3)} className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800">
+      <button onClick={() => setStep(3)} className="flex items-center text-xs font-semibold text-secondary-600 hover:text-primary-800">
         <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Volver a horarios
       </button>
-      <h3 className="text-lg font-bold text-gray-900">Paso 5: Datos del Paciente</h3>
+      <h3 className="text-lg font-bold text-ink">Paso 5: Datos del Paciente</h3>
       <form onSubmit={(e) => {
         e.preventDefault();
         if (!validateChileanRut(formData.rut)) {
@@ -674,25 +674,25 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
         setStep(5);
       }} className="space-y-4 text-xs">
         <div>
-          <label className="block font-medium text-gray-700 mb-1">Nombre Completo *</label>
-          <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none" />
+          <label className="block font-medium text-ink-muted mb-1">Nombre Completo *</label>
+          <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 border border-silver-300 rounded-xl outline-none" />
         </div>
         <div>
-          <label className="block font-medium text-gray-700 mb-1">RUT *</label>
-          <input type="text" required value={formData.rut} onChange={handleRutChange} className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none" />
-          {rutError && <p className="text-red-500 text-[10px] mt-1">{rutError}</p>}
+          <label className="block font-medium text-ink-muted mb-1">RUT *</label>
+          <input type="text" required value={formData.rut} onChange={handleRutChange} className="w-full px-3 py-2 border border-silver-300 rounded-xl outline-none" />
+          {rutError && <p className="text-danger text-[10px] mt-1">{rutError}</p>}
         </div>
         <div>
-          <label className="block font-medium text-gray-700 mb-1">Correo Electrónico *</label>
-          <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none" />
+          <label className="block font-medium text-ink-muted mb-1">Correo Electrónico *</label>
+          <input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 border border-silver-300 rounded-xl outline-none" />
         </div>
         <div>
-          <label className="block font-medium text-gray-700 mb-1">Teléfono *</label>
-          <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none" />
+          <label className="block font-medium text-ink-muted mb-1">Teléfono *</label>
+          <input type="tel" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-3 py-2 border border-silver-300 rounded-xl outline-none" />
         </div>
         <div>
-          <label className="block font-medium text-gray-700 mb-1">Motivo de Consulta</label>
-          <select value={formData.reason} onChange={e => setFormData({...formData, reason: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-xl outline-none bg-white">
+          <label className="block font-medium text-ink-muted mb-1">Motivo de Consulta</label>
+          <select value={formData.reason} onChange={e => setFormData({...formData, reason: e.target.value})} className="w-full px-3 py-2 border border-silver-300 rounded-xl outline-none bg-white">
             <option value="Consulta">Consulta General</option>
             <option value="Limpieza">Limpieza Dental</option>
             <option value="Urgencia">Urgencia</option>
@@ -700,7 +700,7 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
             <option value="Otro">Otro</option>
           </select>
         </div>
-        <button type="submit" className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl">Continuar al Resumen</button>
+        <button type="submit" className="w-full py-3 bg-primary text-white font-bold rounded-xl">Continuar al Resumen</button>
       </form>
     </div>
   );
@@ -708,11 +708,11 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   // PASO 5: Resumen
   const renderStep5 = () => (
     <div className="space-y-4">
-      <button onClick={() => setStep(4)} className="flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800">
+      <button onClick={() => setStep(4)} className="flex items-center text-xs font-semibold text-secondary-600 hover:text-primary-800">
         <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Volver a datos
       </button>
-      <h3 className="text-lg font-bold text-gray-900">Paso 6: Resumen</h3>
-      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-xs space-y-2">
+      <h3 className="text-lg font-bold text-ink">Paso 6: Resumen</h3>
+      <div className="bg-silver-100 border border-silver-200 rounded-2xl p-4 text-xs space-y-2">
         <p><strong>Odontólogo:</strong> Dr(a). {selectedDentist?.full_name}</p>
         <p><strong>Fecha:</strong> {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })} a las {selectedSlot?.start_time.substring(0,5)} hrs</p>
         <p><strong>Tipo:</strong> {selectedType?.name}</p>
@@ -721,12 +721,12 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
         <p><strong>Motivo:</strong> {formData.reason}</p>
       </div>
 
-      {bookingError && <p className="text-red-600 font-bold text-xs">{bookingError}</p>}
+      {bookingError && <p className="text-danger font-bold text-xs">{bookingError}</p>}
 
       <button
         onClick={submitBooking}
         disabled={bookingLoading}
-        className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl disabled:opacity-50"
+        className="w-full py-3 bg-success hover:bg-success-700 text-white font-bold rounded-xl disabled:opacity-50"
       >
         {bookingLoading ? 'Agendando...' : 'Confirmar Cita'}
       </button>
@@ -736,20 +736,20 @@ function InternalBookingWizard({ dentists, initialDentistId, onClose }) {
   // PASO 6: Éxito
   const renderStep6 = () => (
     <div className="text-center py-6 space-y-4">
-      <div className="w-12 h-12 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto">
+      <div className="w-12 h-12 bg-success-100 text-success rounded-full flex items-center justify-center mx-auto">
         <CheckCircle className="w-6 h-6" />
       </div>
-      <h3 className="text-xl font-bold text-gray-900">¡Cita Agendada Exitosamente!</h3>
-      <p className="text-xs text-gray-500 max-w-sm mx-auto">La cita ha quedado agendada en la base de datos de Mattodonto. Se envió confirmación por correo al paciente.</p>
-      <button onClick={onClose} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs">Cerrar y Volver a Agenda</button>
+      <h3 className="text-xl font-bold text-ink">¡Cita Agendada Exitosamente!</h3>
+      <p className="text-xs text-ink-subtle max-w-sm mx-auto">La cita ha quedado agendada en la base de datos de Mattodonto. Se envió confirmación por correo al paciente.</p>
+      <button onClick={onClose} className="px-5 py-2.5 bg-primary hover:bg-primary-700 text-white font-bold rounded-xl text-xs">Cerrar y Volver a Agenda</button>
     </div>
   );
 
   return (
     <div>
       {loading ? (
-        <div className="py-12 text-center text-gray-400 text-xs">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
+        <div className="py-12 text-center text-ink-subtle text-xs">
+          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-secondary-600" />
           Cargando opciones...
         </div>
       ) : (

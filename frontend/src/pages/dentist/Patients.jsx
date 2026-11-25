@@ -176,12 +176,12 @@ export default function Patients() {
       {/* Cabecera */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-heading text-3xl font-bold text-slate-900">Fichas Clínicas</h1>
-          <p className="text-slate-500 mt-1.5 text-sm font-medium">Administración y registro de datos de pacientes.</p>
+          <h1 className="font-heading text-3xl font-semibold text-ink">Fichas Clínicas</h1>
+          <p className="text-ink-subtle mt-1.5 text-sm font-medium">Administración y registro de datos de pacientes.</p>
         </div>
         <button 
           onClick={() => { setShowModal(true); setFormError(null); setRutError(null); }}
-          className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-100/50 transition-all hover:-translate-y-0.5 cursor-pointer"
+          className="flex items-center justify-center space-x-2 bg-primary hover:bg-secondary text-white font-bold px-5 py-3 rounded-2xl shadow-md transition-all cursor-pointer"
         >
           <UserPlus className="w-5 h-5" />
           <span>Nueva Ficha</span>
@@ -189,38 +189,38 @@ export default function Patients() {
       </div>
 
       {/* Caja de Búsqueda */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center space-x-3">
-        <Search className="w-5 h-5 text-slate-400 shrink-0" />
+      <div className="bg-white rounded-2xl border border-silver-300 p-4 shadow-sm flex items-center space-x-3">
+        <Search className="w-5 h-5 text-ink-subtle shrink-0" />
         <input 
           type="text" 
           value={search}
           onChange={handleSearchChange}
           placeholder="Buscar paciente por nombre o RUT..."
-          className="w-full text-slate-800 outline-none text-sm placeholder-slate-400 bg-transparent"
+          className="w-full text-ink outline-none text-sm placeholder:text-ink-subtle bg-transparent"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="text-xs text-slate-400 hover:text-slate-650 font-bold px-2 cursor-pointer">
+          <button onClick={() => setSearch('')} className="text-xs text-ink-subtle hover:text-ink-muted font-bold px-2 cursor-pointer">
             Limpiar
           </button>
         )}
       </div>
 
       {/* Listado */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden min-h-[400px] flex flex-col justify-between">
+      <div className="bg-white rounded-2xl shadow-sm border border-silver-200 overflow-hidden min-h-[400px] flex flex-col justify-between">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <tr className="bg-silver-100/50 border-b border-silver-200 text-xs font-semibold text-ink-subtle uppercase tracking-wider">
                 <th className="py-4 px-6">Nombre</th>
                 <th className="py-4 px-6">RUT</th>
                 <th className="py-4 px-6">Teléfono</th>
                 <th className="py-4 px-6">Previsión</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
+            <tbody className="divide-y divide-silver-200 text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan="4" className="py-20 text-center text-slate-400">
+                  <td colSpan="4" className="py-20 text-center text-ink-subtle">
                     <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary mb-2" />
                     Cargando listado de pacientes...
                   </td>
@@ -228,9 +228,9 @@ export default function Patients() {
               ) : patients.length === 0 ? (
                 <tr>
                   <td colSpan="4" className="py-20 text-center">
-                    <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-550 font-medium">No se encontraron pacientes registrados.</p>
-                    <p className="text-slate-400 text-xs mt-1">Crea un registro utilizando el botón "Nueva Ficha".</p>
+                    <User className="w-12 h-12 text-silver-400 mx-auto mb-3" />
+                    <p className="text-ink-muted font-medium">No se encontraron pacientes registrados.</p>
+                    <p className="text-ink-subtle text-xs mt-1">Crea un registro utilizando el botón "Nueva Ficha".</p>
                   </td>
                 </tr>
               ) : (
@@ -238,26 +238,26 @@ export default function Patients() {
                   <tr 
                     key={patient.id} 
                     onClick={() => navigate(`/${basePath}/patients/${patient.id}`)}
-                    className="hover:bg-slate-50/70 cursor-pointer transition-all group"
+                    className="hover:bg-silver-100/70 cursor-pointer transition-all group"
                   >
-                    <td className="py-4 px-6 font-bold text-slate-800 group-hover:text-primary transition-colors">
+                    <td className="py-4 px-6 font-bold text-ink group-hover:text-primary transition-colors">
                       {patient.full_name}
                     </td>
-                    <td className="py-4 px-6 text-slate-600 font-mono text-xs">{patient.rut}</td>
-                    <td className="py-4 px-6 text-slate-600">
+                    <td className="py-4 px-6 text-ink-muted font-mono text-xs">{patient.rut}</td>
+                    <td className="py-4 px-6 text-ink-muted">
                       <div className="flex items-center space-x-1.5">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" />
+                        <Phone className="w-3.5 h-3.5 text-ink-subtle" />
                         <span>{patient.phone || 'Sin registrar'}</span>
                       </div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center space-x-2">
                         {patient.prevision === 'FONASA' ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700 uppercase">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-100 text-success-700 uppercase">
                             FONASA
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-650 uppercase">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-silver-200 text-ink-muted uppercase">
                             {patient.prevision}
                             {patient.prevision_detail && ` (${patient.prevision_detail})`}
                           </span>
@@ -273,22 +273,22 @@ export default function Patients() {
 
         {/* Paginación */}
         {totalPages > 1 && (
-          <div className="p-4 border-t border-slate-100 flex items-center justify-between">
-            <span className="text-xs text-slate-500 font-medium">
+          <div className="p-4 border-t border-silver-200 flex items-center justify-between">
+            <span className="text-xs text-ink-subtle font-medium">
               Mostrando página {page} de {totalPages} ({totalCount} pacientes)
             </span>
             <div className="flex space-x-2">
               <button 
                 onClick={() => setPage(p => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                className="p-2 border border-silver-300 rounded-xl hover:bg-silver-100 disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button 
                 onClick={() => setPage(p => Math.min(p + 1, totalPages))}
                 disabled={page === totalPages}
-                className="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                className="p-2 border border-silver-300 rounded-xl hover:bg-silver-100 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -303,19 +303,19 @@ export default function Patients() {
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-200">
             <button 
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all"
+              className="absolute top-4 right-4 p-2 text-ink-subtle hover:text-ink-muted rounded-full hover:bg-silver-200 transition-all"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <UserPlus className="w-6 h-6 mr-3 text-blue-600" />
+            <h2 className="text-2xl font-bold text-ink mb-2 flex items-center">
+              <UserPlus className="w-6 h-6 mr-3 text-secondary-600" />
               Crear Ficha de Paciente
             </h2>
-            <p className="text-gray-500 mb-6 text-sm">Registra los datos básicos del paciente en el sistema.</p>
+            <p className="text-ink-subtle mb-6 text-sm">Registra los datos básicos del paciente en el sistema.</p>
 
             {formError && (
-              <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start border border-red-100 text-sm">
+              <div className="bg-danger-100 text-danger-700 p-4 rounded-xl mb-6 flex items-start border border-danger/20 text-sm">
                 <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
                 <span>{formError}</span>
               </div>
@@ -324,37 +324,37 @@ export default function Patients() {
             <form onSubmit={handleFormSubmit} className="space-y-5">
               {/* Nombre completo */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Nombre Completo *</label>
                 <input 
                   type="text" required
                   value={formData.full_name} onChange={e => setFormData({ ...formData, full_name: e.target.value })}
                   placeholder="Ej. Constanza Silva"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
               {/* RUT y Fecha de Nacimiento */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">RUT *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">RUT *</label>
                   <input 
                     type="text" required
                     value={formData.rut} onChange={handleRutChange}
                     placeholder="Ej. 12.345.678-5"
-                    className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 focus:border-transparent transition-all outline-none`}
+                    className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-danger' : 'border-silver-300'} focus:outline-none focus:border-secondary focus:shadow-focus transition-all`}
                   />
                   {rutError ? (
-                    <p className="text-xs text-red-600 mt-1 font-medium">{rutError}</p>
+                    <p className="text-xs text-danger mt-1 font-medium">{rutError}</p>
                   ) : (
-                    <p className="text-xs text-gray-500 mt-1">Formato: XX.XXX.XXX-X</p>
+                    <p className="text-xs text-ink-subtle mt-1">Formato: XX.XXX.XXX-X</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Fecha de Nacimiento</label>
                   <input 
                     type="date"
                     value={formData.birth_date} onChange={e => setFormData({ ...formData, birth_date: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
               </div>
@@ -362,10 +362,10 @@ export default function Patients() {
               {/* Sexo e Identidad de Género */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sexo *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Sexo *</label>
                   <select 
                     value={formData.sex} onChange={e => setFormData({ ...formData, sex: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all bg-white"
                   >
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
@@ -373,12 +373,12 @@ export default function Patients() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">¿Cómo se identifica?</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">¿Cómo se identifica?</label>
                   <input 
                     type="text"
                     value={formData.gender_identity} onChange={e => setFormData({ ...formData, gender_identity: e.target.value })}
                     placeholder="Identidad de género (opcional)"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
               </div>
@@ -386,10 +386,10 @@ export default function Patients() {
               {/* Previsión */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Previsión *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Previsión *</label>
                   <select 
                     value={formData.prevision} onChange={e => setFormData({ ...formData, prevision: e.target.value, prevision_detail: '' })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all bg-white"
                   >
                     <option value="FONASA">FONASA</option>
                     <option value="ISAPRE">ISAPRE</option>
@@ -401,14 +401,14 @@ export default function Patients() {
                 {/* Mostrar el detalle solo si es ISAPRE u Otro */}
                 {(formData.prevision === 'ISAPRE' || formData.prevision === 'Otro') && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-ink-muted mb-1">
                       {formData.prevision === 'ISAPRE' ? 'Nombre ISAPRE *' : 'Detalle Previsión *'}
                     </label>
                     <input 
                       type="text" required
                       value={formData.prevision_detail} onChange={e => setFormData({ ...formData, prevision_detail: e.target.value })}
                       placeholder={formData.prevision === 'ISAPRE' ? "Ej. Colmena, Banmédica" : "Ej. Convenio Especial"}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                      className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                     />
                   </div>
                 )}
@@ -417,32 +417,32 @@ export default function Patients() {
               {/* Teléfono y Correo */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Teléfono</label>
                   <input 
                     type="tel"
                     value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Correo Electrónico</label>
                   <input 
                     type="email"
                     value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
                     placeholder="ejemplo@correo.com"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
               </div>
 
               {/* Dirección */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Dirección</label>
                 <input 
                   type="text"
                   value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Ej. Calle Falsa 123, depto 40"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
@@ -450,14 +450,14 @@ export default function Patients() {
                 <button 
                   type="button" 
                   onClick={() => setShowModal(false)}
-                  className="w-1/2 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all"
+                  className="w-1/2 py-3 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-xl transition-all"
                 >
                   Cancelar
                 </button>
                 <button 
                   type="submit" 
                   disabled={formLoading}
-                  className="w-1/2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center space-x-2"
+                  className="w-1/2 py-3 bg-primary hover:bg-primary-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center space-x-2"
                 >
                   {formLoading ? (
                     <>

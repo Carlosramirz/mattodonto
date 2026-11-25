@@ -36,18 +36,18 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-silver-100 p-4">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-silver-200">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <LogIn className="w-8 h-8 text-blue-600" />
+          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogIn className="w-8 h-8 text-secondary-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Ingreso a Mattodonto</h1>
-          <p className="text-gray-500 mt-2">Panel exclusivo para personal médico y administrativo.</p>
+          <h1 className="text-2xl font-bold text-ink">Ingreso a Mattodonto</h1>
+          <p className="text-ink-subtle mt-2">Panel exclusivo para personal médico y administrativo.</p>
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-center text-sm border border-red-100">
+          <div className="bg-danger-100 text-danger-700 p-4 rounded-xl mb-6 flex items-center text-sm border border-danger/20">
             <AlertCircle className="w-5 h-5 mr-2 shrink-0" />
             <span>{error}</span>
           </div>
@@ -55,21 +55,21 @@ export default function Login() {
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1">Correo Electrónico</label>
             <input 
               type="email" required
               value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all" 
               placeholder="correo@mattodonto.com"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <label className="block text-sm font-medium text-ink-muted mb-1">Contraseña</label>
             <input 
               type="password" required
               value={password} onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" 
+              className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all" 
             />
           </div>
 
@@ -77,8 +77,8 @@ export default function Login() {
             type="submit" 
             disabled={loadingLocal}
             className={`
-              w-full py-4 text-white font-bold rounded-xl shadow-lg transition-all mt-4
-              ${loadingLocal ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 shadow-blue-200'}
+              w-full py-4 text-white font-bold rounded-xl shadow-md transition-all mt-4
+              ${loadingLocal ? 'bg-primary-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-700'}
             `}
           >
             {loadingLocal ? 'Ingresando...' : 'Iniciar Sesión'}

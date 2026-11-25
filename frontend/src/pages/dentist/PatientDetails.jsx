@@ -454,7 +454,7 @@ export default function PatientDetails() {
       const isMatch = normalizedKeywords.includes(normPart);
       
       return isMatch ? (
-        <mark key={i} className="bg-yellow-200 px-1 rounded font-semibold text-gray-900">
+        <mark key={i} className="bg-warning-100 px-1 rounded font-semibold text-ink">
           {part}
         </mark>
       ) : (
@@ -534,8 +534,8 @@ export default function PatientDetails() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-6 flex flex-col items-center justify-center min-h-[400px] text-gray-500">
-        <Loader2 className="w-10 h-10 animate-spin text-blue-600 mb-4" />
+      <div className="max-w-6xl mx-auto p-6 flex flex-col items-center justify-center min-h-[400px] text-ink-subtle">
+        <Loader2 className="w-10 h-10 animate-spin text-secondary-600 mb-4" />
         <p className="font-medium">Cargando ficha del paciente...</p>
       </div>
     );
@@ -544,10 +544,10 @@ export default function PatientDetails() {
   if (error && !patient) {
     return (
       <div className="max-w-6xl mx-auto p-6 space-y-6">
-        <button onClick={handleBackNavigation} className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+        <button onClick={handleBackNavigation} className="flex items-center text-sm font-medium text-secondary-600 hover:text-primary-800 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-1" /> Volver a pacientes
         </button>
-        <div className="bg-red-50 text-red-700 p-6 rounded-3xl border border-red-100 flex items-start">
+        <div className="bg-danger-100 text-danger-700 p-6 rounded-3xl border border-danger/20 flex items-start">
           <AlertCircle className="w-6 h-6 mr-4 shrink-0 mt-0.5" />
           <div>
             <h3 className="font-bold text-lg">Error</h3>
@@ -564,14 +564,14 @@ export default function PatientDetails() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <button 
           onClick={handleBackNavigation} 
-          className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+          className="flex items-center text-sm font-medium text-secondary-600 hover:text-primary-800 transition-colors"
           disabled={saveLoading}
         >
           <ArrowLeft className="w-4 h-4 mr-1" /> Volver a pacientes
         </button>
         
         {saveSuccess && (
-          <div className="bg-green-50 text-green-700 px-4 py-2 rounded-xl flex items-center text-sm border border-green-100 animate-in fade-in duration-300">
+          <div className="bg-success-100 text-success-700 px-4 py-2 rounded-xl flex items-center text-sm border border-success/20 animate-in fade-in duration-300">
             <CheckCircle className="w-4 h-4 mr-2" />
             <span>Cambios guardados con éxito.</span>
           </div>
@@ -580,8 +580,8 @@ export default function PatientDetails() {
 
       {/* Banner Rojo de Alertas Médicas (Si existen y no es asistente) */}
       {!isAssistant && patient && patient.medical_alerts && patient.medical_alerts.length > 0 && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl flex items-start text-red-800 shadow-sm animate-in slide-in-from-top duration-300">
-          <AlertCircle className="w-5 h-5 mr-3 text-red-600 shrink-0 mt-0.5" />
+        <div className="bg-danger-100 border-l-4 border-danger p-4 rounded-2xl flex items-start text-danger-700 shadow-sm animate-in slide-in-from-top duration-300">
+          <AlertCircle className="w-5 h-5 mr-3 text-danger shrink-0 mt-0.5" />
           <span className="font-bold text-sm">
             ⚠ Alertas Médicas: {patient.medical_alerts.join(', ')}
           </span>
@@ -589,23 +589,23 @@ export default function PatientDetails() {
       )}
 
       {/* Tarjeta Principal Ficha */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-silver-200 shadow-sm overflow-hidden">
         {/* Banner Superior */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 sm:p-8 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="bg-gradient-to-r from-primary to-secondary p-6 sm:p-8 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 shrink-0">
               <User className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">{patient.full_name}</h1>
-              <p className="text-blue-100 text-sm mt-1 font-mono">RUT: {patient.rut}</p>
+              <p className="text-primary-200 text-sm mt-1 font-mono">RUT: {patient.rut}</p>
             </div>
           </div>
           
           {!isEditing && (
             <button 
               onClick={() => setIsEditing(true)}
-              className="bg-white hover:bg-gray-50 text-blue-700 font-bold px-5 py-3 rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-md shadow-black/5 hover:-translate-y-0.5"
+              className="bg-white hover:bg-silver-100 text-primary-700 font-bold px-5 py-3 rounded-2xl flex items-center justify-center space-x-2 transition-all shadow-md"
             >
               <Edit className="w-4 h-4" />
               <span>Editar Datos</span>
@@ -615,15 +615,15 @@ export default function PatientDetails() {
 
         {/* Sección Editable de Alertas Médicas Permanentes (OCULTADA PARA ROL ASSISTANT) */}
         {!isAssistant && (
-          <div className="bg-red-50/20 border-b border-gray-100 p-6 sm:p-8 space-y-4">
-            <div className="flex items-center space-x-2 text-red-700">
+          <div className="bg-danger-100/20 border-b border-silver-200 p-6 sm:p-8 space-y-4">
+            <div className="flex items-center space-x-2 text-danger-700">
               <AlertCircle className="w-5 h-5 shrink-0" />
               <h3 className="font-bold text-sm uppercase tracking-wider">Alertas Médicas del Paciente</h3>
             </div>
             
             <div className="flex flex-wrap gap-2">
               {!patient.medical_alerts || patient.medical_alerts.length === 0 ? (
-                <span className="text-xs text-gray-500 italic">No hay alertas médicas registradas. Agrega condiciones críticas de salud.</span>
+                <span className="text-xs text-ink-subtle italic">No hay alertas médicas registradas. Agrega condiciones críticas de salud.</span>
               ) : (
                 patient.medical_alerts.map((alert, idx) => {
                   const isCustom = isCustomAlert(alert);
@@ -631,8 +631,8 @@ export default function PatientDetails() {
                   return (
                     <span 
                       key={idx} 
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border shadow-sm animate-in zoom-in-95 transition-all ${
-                        isCustom ? 'border-dashed border-red-400' : 'border-red-200'
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-danger-100 text-danger-700 border shadow-sm animate-in zoom-in-95 transition-all ${
+                        isCustom ? 'border-dashed border-danger' : 'border-danger/20'
                       } ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
                       title={isCustom ? 'Alerta personalizada (borde punteado)' : 'Alerta del catálogo'}
                     >
@@ -640,7 +640,7 @@ export default function PatientDetails() {
                       <button 
                         type="button"
                         onClick={() => handleRemoveAlert(alert)}
-                        className="ml-2 hover:bg-red-200 text-red-900 rounded-full p-0.5 transition-colors"
+                        className="ml-2 hover:bg-danger/20 text-danger-700 rounded-full p-0.5 transition-colors"
                         disabled={isPending}
                       >
                         <X className="w-3 h-3" />
@@ -675,12 +675,12 @@ export default function PatientDetails() {
                   onKeyDown={handleKeyDown}
                   placeholder="Busca o escribe una alerta médica..."
                   maxLength="100"
-                  className="flex-1 px-4 py-2 text-xs rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-gray-800 transition-all"
+                  className="flex-1 px-4 py-2 text-xs rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus bg-white text-ink transition-all"
                 />
                 <button 
                   type="button"
                   onClick={() => handleAddAlert(newAlertText)}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-sm transition-all"
+                  className="px-4 py-2 bg-danger hover:bg-danger-700 text-white font-bold rounded-xl text-xs shadow-sm transition-all"
                 >
                   + Agregar
                 </button>
@@ -688,7 +688,7 @@ export default function PatientDetails() {
 
               {/* Dropdown de opciones */}
               {showDropdown && (
-                <div className="absolute left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-2xl shadow-xl z-50 py-1 divide-y divide-gray-50">
+                <div className="absolute left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-white border border-silver-300 rounded-2xl shadow-xl z-50 py-1 divide-y divide-silver-200">
                   {filteredCatalog.map((item, idx) => {
                     const isPending = pendingAlerts.includes(item.name);
                     return (
@@ -703,12 +703,12 @@ export default function PatientDetails() {
                         disabled={isPending}
                         className={`w-full text-left px-4 py-2 text-xs transition-colors font-semibold flex items-center justify-between ${
                           idx === focusedIndex 
-                            ? 'bg-blue-50 text-blue-700' 
-                            : 'text-gray-700 hover:bg-gray-50'
+                            ? 'bg-primary-100 text-primary-700' 
+                            : 'text-ink-muted hover:bg-silver-100'
                         } ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
                       >
                         <span>{item.name}</span>
-                        <span className="text-[9px] text-gray-400 font-normal">Catálogo</span>
+                        <span className="text-[9px] text-ink-subtle font-normal">Catálogo</span>
                       </button>
                     );
                   })}
@@ -723,8 +723,8 @@ export default function PatientDetails() {
                       }}
                       className={`w-full text-left px-4 py-2 text-xs transition-colors font-bold flex items-center justify-between ${
                         focusedIndex === filteredCatalog.length 
-                          ? 'bg-red-50 text-red-700' 
-                          : 'text-red-600 hover:bg-red-50/50'
+                          ? 'bg-danger-100 text-danger-700' 
+                          : 'text-danger hover:bg-danger-100/50'
                       }`}
                     >
                       <span>Agregar "{newAlertText}" como alerta personalizada</span>
@@ -733,7 +733,7 @@ export default function PatientDetails() {
                   )}
 
                   {filteredCatalog.length === 0 && !showCustomOption && (
-                    <div className="px-4 py-3 text-xs text-gray-400 italic text-center">
+                    <div className="px-4 py-3 text-xs text-ink-subtle italic text-center">
                       No se encontraron coincidencias en el catálogo.
                     </div>
                   )}
@@ -746,7 +746,7 @@ export default function PatientDetails() {
         {/* Contenido / Formulario */}
         <div className="p-6 sm:p-8">
           {error && isEditing && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start border border-red-100 text-sm">
+            <div className="bg-danger-100 text-danger-700 p-4 rounded-xl mb-6 flex items-start border border-danger/20 text-sm">
               <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -758,43 +758,43 @@ export default function PatientDetails() {
                 
                 {/* Nombre */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Nombre Completo *</label>
                   <input 
                     type="text" required
                     value={formData.full_name} onChange={e => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* RUT */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">RUT *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">RUT *</label>
                   <input 
                     type="text" required
                     value={formData.rut} onChange={handleRutChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} focus:ring-2 focus:border-transparent transition-all outline-none`}
+                    className={`w-full px-4 py-3 rounded-xl border ${rutError ? 'border-danger' : 'border-silver-300'} focus:outline-none focus:border-secondary focus:shadow-focus transition-all`}
                   />
                   {rutError && (
-                    <p className="text-xs text-red-600 mt-1 font-medium">{rutError}</p>
+                    <p className="text-xs text-danger mt-1 font-medium">{rutError}</p>
                   )}
                 </div>
 
                 {/* Fecha de Nacimiento */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Fecha de Nacimiento</label>
                   <input 
                     type="date"
                     value={formData.birth_date} onChange={e => setFormData({ ...formData, birth_date: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* Sexo */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sexo *</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Sexo *</label>
                   <select 
                     value={formData.sex} onChange={e => setFormData({ ...formData, sex: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all bg-white"
                   >
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
@@ -804,21 +804,21 @@ export default function PatientDetails() {
 
                 {/* Identidad Género */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">¿Cómo se identifica?</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">¿Cómo se identifica?</label>
                   <input 
                     type="text"
                     value={formData.gender_identity} onChange={e => setFormData({ ...formData, gender_identity: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* Previsión */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Previsión *</label>
+                    <label className="block text-sm font-medium text-ink-muted mb-1">Previsión *</label>
                     <select 
                       value={formData.prevision} onChange={e => setFormData({ ...formData, prevision: e.target.value, prevision_detail: '' })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-white"
+                      className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all bg-white"
                     >
                       <option value="FONASA">FONASA</option>
                       <option value="ISAPRE">ISAPRE</option>
@@ -829,11 +829,11 @@ export default function PatientDetails() {
                   
                   {(formData.prevision === 'ISAPRE' || formData.prevision === 'Otro') && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Detalle Previsión *</label>
+                      <label className="block text-sm font-medium text-ink-muted mb-1">Detalle Previsión *</label>
                       <input 
                         type="text" required
                         value={formData.prevision_detail} onChange={e => setFormData({ ...formData, prevision_detail: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                        className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                       />
                     </div>
                   )}
@@ -841,40 +841,40 @@ export default function PatientDetails() {
 
                 {/* Teléfono */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Teléfono</label>
                   <input 
                     type="tel"
                     value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* Correo */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Correo Electrónico</label>
                   <input 
                     type="email"
                     value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* Dirección */}
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Dirección</label>
                   <input 
                     type="text"
                     value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
               </div>
 
-              <div className="flex space-x-3 pt-4 border-t border-gray-100">
+              <div className="flex space-x-3 pt-4 border-t border-silver-200">
                 <button 
                   type="button" 
                   onClick={() => { setIsEditing(false); setError(null); setRutError(null); }}
-                  className="w-1/2 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-all"
+                  className="w-1/2 py-3.5 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-2xl transition-all"
                   disabled={saveLoading}
                 >
                   Cancelar
@@ -882,7 +882,7 @@ export default function PatientDetails() {
                 <button 
                   type="submit" 
                   disabled={saveLoading}
-                  className="w-1/2 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center space-x-2"
+                  className="w-1/2 py-3.5 bg-primary hover:bg-primary-700 text-white font-bold rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2"
                 >
                   {saveLoading ? (
                     <>
@@ -902,53 +902,53 @@ export default function PatientDetails() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
               {/* Información Personal */}
               <div className="space-y-4">
-                <h3 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-2">Información Personal</h3>
+                <h3 className="text-base font-bold text-ink border-b border-silver-200 pb-2">Información Personal</h3>
                 
                 <div className="grid grid-cols-2 gap-y-3">
-                  <span className="text-gray-500">Sexo biológico:</span>
-                  <span className="font-semibold text-gray-800">{patient.sex}</span>
+                  <span className="text-ink-subtle">Sexo biológico:</span>
+                  <span className="font-semibold text-ink">{patient.sex}</span>
                   
-                  <span className="text-gray-500">Identidad de género:</span>
-                  <span className="font-semibold text-gray-800">{patient.gender_identity || 'No especificada'}</span>
+                  <span className="text-ink-subtle">Identidad de género:</span>
+                  <span className="font-semibold text-ink">{patient.gender_identity || 'No especificada'}</span>
 
-                  <span className="text-gray-500">Fecha de Nacimiento:</span>
-                  <span className="font-semibold text-gray-800">{patient.birth_date || 'No registrada'}</span>
+                  <span className="text-ink-subtle">Fecha de Nacimiento:</span>
+                  <span className="font-semibold text-ink">{patient.birth_date || 'No registrada'}</span>
                 </div>
               </div>
 
               {/* Información de Salud y Contacto */}
               <div className="space-y-4">
-                <h3 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-2">Salud y Contacto</h3>
+                <h3 className="text-base font-bold text-ink border-b border-silver-200 pb-2">Salud y Contacto</h3>
                 
                 <div className="grid grid-cols-2 gap-y-3">
-                  <span className="text-gray-500">Previsión:</span>
+                  <span className="text-ink-subtle">Previsión:</span>
                   <div className="flex items-center space-x-1.5">
                     {patient.prevision === 'FONASA' ? (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 uppercase">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-success-100 text-success-700 uppercase">
                         FONASA
                       </span>
                     ) : (
-                      <span className="font-semibold text-gray-800 uppercase">
+                      <span className="font-semibold text-ink uppercase">
                         {patient.prevision} {patient.prevision_detail && `(${patient.prevision_detail})`}
                       </span>
                     )}
                   </div>
 
-                  <span className="text-gray-500">Teléfono:</span>
-                  <span className="font-semibold text-gray-800 flex items-center space-x-1.5">
-                    <Phone className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-ink-subtle">Teléfono:</span>
+                  <span className="font-semibold text-ink flex items-center space-x-1.5">
+                    <Phone className="w-3.5 h-3.5 text-ink-subtle" />
                     <span>{patient.phone || 'No registrado'}</span>
                   </span>
 
-                  <span className="text-gray-500">Correo Electrónico:</span>
-                  <span className="font-semibold text-gray-800 flex items-center space-x-1.5">
-                    <Mail className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-ink-subtle">Correo Electrónico:</span>
+                  <span className="font-semibold text-ink flex items-center space-x-1.5">
+                    <Mail className="w-3.5 h-3.5 text-ink-subtle" />
                     <span>{patient.email || 'No registrado'}</span>
                   </span>
 
-                  <span className="text-gray-500 col-span-2 mt-1">Dirección:</span>
-                  <span className="font-semibold text-gray-800 col-span-2 flex items-start space-x-1.5">
-                    <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                  <span className="text-ink-subtle col-span-2 mt-1">Dirección:</span>
+                  <span className="font-semibold text-ink col-span-2 flex items-start space-x-1.5">
+                    <MapPin className="w-4 h-4 text-ink-subtle mt-0.5 shrink-0" />
                     <span>{patient.address || 'No registrada'}</span>
                   </span>
                 </div>
@@ -960,15 +960,15 @@ export default function PatientDetails() {
 
       {/* Sección Historial Clínico (OCULTADA PARA ROL ASSISTANT) */}
       {!isAssistant && (
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center">
-              <Heart className="w-5 h-5 mr-3 text-red-500" />
+        <div className="bg-white rounded-3xl border border-silver-200 shadow-sm p-6 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between border-b border-silver-200 pb-4">
+            <h2 className="text-xl font-bold text-ink flex items-center">
+              <Heart className="w-5 h-5 mr-3 text-danger" />
               Historial Clínico
             </h2>
             <button 
               onClick={openNewRecordModal}
-              className="flex items-center space-x-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold px-4 py-2 rounded-xl transition-all text-xs"
+              className="flex items-center space-x-1.5 bg-primary-100 hover:bg-primary-200 text-secondary-600 font-bold px-4 py-2 rounded-xl transition-all text-xs"
             >
               <Plus className="w-4 h-4" />
               <span>Nueva Sesión</span>
@@ -976,14 +976,14 @@ export default function PatientDetails() {
           </div>
 
           {recordsLoading ? (
-            <div className="py-12 text-center text-gray-400">
-              <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-600 mb-2" />
+            <div className="py-12 text-center text-ink-subtle">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto text-secondary-600 mb-2" />
               Cargando historial clínico...
             </div>
           ) : records.length === 0 ? (
-            <div className="py-12 text-center text-gray-400 space-y-2">
-              <BookOpen className="w-10 h-10 mx-auto text-gray-300" />
-              <p className="font-semibold text-base text-gray-600">No hay sesiones clínicas registradas</p>
+            <div className="py-12 text-center text-ink-subtle space-y-2">
+              <BookOpen className="w-10 h-10 mx-auto text-silver-400" />
+              <p className="font-semibold text-base text-ink-muted">No hay sesiones clínicas registradas</p>
               <p className="text-sm">Registra una nueva atención presionando el botón "Nueva Sesión".</p>
             </div>
           ) : (
@@ -1003,7 +1003,7 @@ export default function PatientDetails() {
                   <div 
                     key={rec.id} 
                     className={`border rounded-2xl transition-all duration-200 bg-white ${
-                      isExpanded ? 'border-blue-200 shadow-sm ring-1 ring-blue-100' : 'border-gray-100 hover:border-gray-200 shadow-sm/5'
+                      isExpanded ? 'border-primary-200 shadow-sm ring-1 ring-primary-100' : 'border-silver-200 hover:border-silver-300 shadow-sm'
                     }`}
                   >
                     {/* Cabecera Colapsada */}
@@ -1013,10 +1013,10 @@ export default function PatientDetails() {
                     >
                       <div className="space-y-2 flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                          <span className="text-sm font-bold text-gray-900 capitalize">
+                          <span className="text-sm font-bold text-ink capitalize">
                             {formattedDate}
                           </span>
-                          <span className="text-xs text-gray-400 font-medium">
+                          <span className="text-xs text-ink-subtle font-medium">
                             Atendido por: {rec.dentist?.full_name || 'Odontólogo'}
                           </span>
                         </div>
@@ -1024,7 +1024,7 @@ export default function PatientDetails() {
                         {!isExpanded && (
                           <>
                             {rec.chief_complaint && (
-                              <p className="text-sm text-gray-600 truncate max-w-xl">
+                              <p className="text-sm text-ink-muted truncate max-w-xl">
                                 Motivo: {rec.chief_complaint}
                               </p>
                             )}
@@ -1035,7 +1035,7 @@ export default function PatientDetails() {
                                 {rec.diagnosis_codes.map((code, idx) => (
                                   <span 
                                     key={idx} 
-                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-primary uppercase border border-slate-200"
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-silver-100 text-primary uppercase border border-silver-300"
                                   >
                                     {code}
                                   </span>
@@ -1046,46 +1046,46 @@ export default function PatientDetails() {
                         )}
                       </div>
                       
-                      <button className="text-gray-400 hover:text-gray-600 p-1 rounded-lg">
+                      <button className="text-ink-subtle hover:text-ink-muted p-1 rounded-lg">
                         {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                       </button>
                     </div>
 
                     {/* Detalle Expandido */}
                     {isExpanded && (
-                      <div className="p-5 pt-0 border-t border-gray-50 space-y-5 animate-in fade-in duration-200">
+                      <div className="p-5 pt-0 border-t border-silver-200 space-y-5 animate-in fade-in duration-200">
                         
                         {/* Las 5 áreas obligatorias de sesión */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm pt-4">
                           
                           {/* 1. Motivo de Consulta */}
                           <div className="space-y-1">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Motivo de Consulta</h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">{rec.chief_complaint || 'No especificado.'}</p>
+                            <h4 className="text-xs font-bold text-ink-subtle uppercase tracking-wider">Motivo de Consulta</h4>
+                            <p className="text-ink-muted whitespace-pre-wrap">{rec.chief_complaint || 'No especificado.'}</p>
                           </div>
 
                           {/* 2. Anamnesis con resaltado de palabras clave */}
                           <div className="space-y-1">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Anamnesis</h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">{highlightKeywords(rec.anamnesis)}</p>
+                            <h4 className="text-xs font-bold text-ink-subtle uppercase tracking-wider">Anamnesis</h4>
+                            <p className="text-ink-muted whitespace-pre-wrap">{highlightKeywords(rec.anamnesis)}</p>
                           </div>
 
                           {/* 3. Exploración */}
                           <div className="space-y-1">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Exploración</h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">{rec.exploration || 'Sin registro de exploración.'}</p>
+                            <h4 className="text-xs font-bold text-ink-subtle uppercase tracking-wider">Exploración</h4>
+                            <p className="text-ink-muted whitespace-pre-wrap">{rec.exploration || 'Sin registro de exploración.'}</p>
                           </div>
 
                           {/* 4. Diagnóstico (chips catalog + libre) */}
                           <div className="space-y-2">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Diagnóstico</h4>
+                            <h4 className="text-xs font-bold text-ink-subtle uppercase tracking-wider">Diagnóstico</h4>
                             
                             {rec.diagnosis_codes && rec.diagnosis_codes.length > 0 && (
                               <div className="flex flex-wrap gap-1.5 mb-2">
                                 {rec.diagnosis_codes.map((code, idx) => (
                                   <span 
                                     key={idx} 
-                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-primary uppercase border border-slate-200"
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-silver-100 text-primary uppercase border border-silver-300"
                                   >
                                     {code}
                                   </span>
@@ -1093,21 +1093,21 @@ export default function PatientDetails() {
                               </div>
                             )}
 
-                            <p className="text-gray-700 whitespace-pre-wrap">{rec.diagnosis || 'Sin notas adicionales de diagnóstico.'}</p>
+                            <p className="text-ink-muted whitespace-pre-wrap">{rec.diagnosis || 'Sin notas adicionales de diagnóstico.'}</p>
                           </div>
 
                           {/* 5. Procedimiento Realizado */}
                           <div className="space-y-1 md:col-span-2">
-                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Procedimiento Realizado</h4>
-                            <p className="text-gray-700 whitespace-pre-wrap">{rec.procedure_performed || 'Sin registro de procedimiento.'}</p>
+                            <h4 className="text-xs font-bold text-ink-subtle uppercase tracking-wider">Procedimiento Realizado</h4>
+                            <p className="text-ink-muted whitespace-pre-wrap">{rec.procedure_performed || 'Sin registro de procedimiento.'}</p>
                           </div>
 
                         </div>
 
-                        <div className="flex justify-end pt-3 border-t border-gray-50">
+                        <div className="flex justify-end pt-3 border-t border-silver-200">
                           <button 
                             onClick={() => openEditRecordModal(rec)}
-                            className="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-lg text-xs transition-all"
+                            className="flex items-center space-x-1 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold px-3 py-1.5 rounded-lg text-xs transition-all"
                           >
                             <Edit className="w-3.5 h-3.5" />
                             <span>Editar Sesión</span>
@@ -1130,20 +1130,20 @@ export default function PatientDetails() {
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative animate-in zoom-in-95 duration-200">
             <button 
               onClick={() => setShowRecordModal(false)}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all"
+              className="absolute top-4 right-4 p-2 text-ink-subtle hover:text-ink-muted rounded-full hover:bg-silver-200 transition-all"
               disabled={recordFormLoading}
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="font-heading text-2xl font-bold text-slate-900 mb-2 flex items-center">
+            <h2 className="font-heading text-2xl font-semibold text-ink mb-2 flex items-center">
               <BookOpen className="w-6 h-6 mr-3 text-primary" />
               {editingRecord ? 'Editar Sesión Clínica' : 'Registrar Sesión Clínica'}
             </h2>
-            <p className="text-gray-500 mb-6 text-sm">Ingresa los antecedentes clínicos y procedimientos realizados.</p>
+            <p className="text-ink-subtle mb-6 text-sm">Ingresa los antecedentes clínicos y procedimientos realizados.</p>
 
             {recordFormError && (
-              <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 flex items-start border border-red-100 text-sm">
+              <div className="bg-danger-100 text-danger-700 p-4 rounded-xl mb-6 flex items-start border border-danger/20 text-sm">
                 <AlertCircle className="w-5 h-5 mr-3 shrink-0 mt-0.5" />
                 <span>{recordFormError}</span>
               </div>
@@ -1153,24 +1153,24 @@ export default function PatientDetails() {
               
               {/* Fecha de Sesión */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de Sesión *</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Fecha de Sesión *</label>
                 <input 
                   type="date" required
                   value={recordForm.session_date} 
                   onChange={e => setRecordForm({ ...recordForm, session_date: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
               {/* 1. Motivo de Consulta */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Motivo de Consulta</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Motivo de Consulta</label>
                 <textarea 
                   rows="2"
                   value={recordForm.chief_complaint}
                   onChange={e => setRecordForm({ ...recordForm, chief_complaint: e.target.value })}
                   placeholder="Ej. Paciente refiere dolor punzante en molar inferior izquierdo al masticar"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
@@ -1178,8 +1178,8 @@ export default function PatientDetails() {
               <div className="space-y-4">
                 
                 {/* Caja de chips de antecedentes de riesgo permanente */}
-                <div className="bg-red-50/10 border border-gray-100 p-4 rounded-2xl space-y-3">
-                  <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <div className="bg-danger-100/10 border border-silver-200 p-4 rounded-2xl space-y-3">
+                  <label className="block text-[11px] font-bold text-ink-subtle uppercase tracking-wider">
                     Antecedentes de riesgo — se guardan en la ficha permanente del paciente
                   </label>
                   
@@ -1196,8 +1196,8 @@ export default function PatientDetails() {
                           disabled={isPending}
                           className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                             isSelected
-                              ? 'bg-red-600 text-white border-red-600 shadow-sm shadow-red-100'
-                              : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                              ? 'bg-danger text-white border-danger shadow-md'
+                              : 'bg-white text-ink-muted border-silver-300 hover:bg-silver-100'
                           } ${isPending ? 'opacity-50 pointer-events-none' : ''}`}
                         >
                           {item.name}
@@ -1214,7 +1214,7 @@ export default function PatientDetails() {
                           type="button"
                           onClick={() => handleToggleRiskAlert(customAlert, true)}
                           disabled={isPending}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-600 text-white border border-dashed border-red-400 shadow-sm shadow-red-100 transition-all ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger text-white border border-dashed border-danger shadow-md transition-all ${
                             isPending ? 'opacity-50 pointer-events-none' : ''
                           }`}
                         >
@@ -1228,7 +1228,7 @@ export default function PatientDetails() {
                       <button
                         type="button"
                         onClick={() => setShowInlineAlertForm(true)}
-                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-600 border border-transparent transition-all"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-silver-200 hover:bg-silver-300 text-ink-muted border border-transparent transition-all"
                       >
                         + Otro...
                       </button>
@@ -1240,7 +1240,7 @@ export default function PatientDetails() {
                           onChange={(e) => setInlineAlertText(e.target.value)}
                           placeholder="Nueva alerta..."
                           maxLength="100"
-                          className="px-3 py-1 text-xs rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none bg-white text-gray-800"
+                          className="px-3 py-1 text-xs rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus bg-white text-ink"
                         />
                         <button
                           type="button"
@@ -1249,7 +1249,7 @@ export default function PatientDetails() {
                             setInlineAlertText('');
                             setShowInlineAlertForm(false);
                           }}
-                          className="px-3 py-1 bg-red-600 text-white font-bold rounded-xl text-xs hover:bg-red-700 transition-colors"
+                          className="px-3 py-1 bg-danger text-white font-bold rounded-xl text-xs hover:bg-danger-700 transition-colors"
                         >
                           Agregar
                         </button>
@@ -1259,7 +1259,7 @@ export default function PatientDetails() {
                             setInlineAlertText('');
                             setShowInlineAlertForm(false);
                           }}
-                          className="p-1 text-gray-400 hover:text-gray-600 rounded-full transition-colors"
+                          className="p-1 text-ink-subtle hover:text-ink-muted rounded-full transition-colors"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -1270,13 +1270,13 @@ export default function PatientDetails() {
 
                 {/* Notas de Anamnesis (Textarea Libre) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Notas de anamnesis</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Notas de anamnesis</label>
                   <textarea 
                     rows="3"
                     value={recordForm.anamnesis}
                     onChange={e => setRecordForm({ ...recordForm, anamnesis: e.target.value })}
                     placeholder="Ej. Paciente declara tabaquismo desde los 15 años. Controlado de su cardiopatía."
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
@@ -1284,39 +1284,39 @@ export default function PatientDetails() {
 
               {/* 3. Exploración */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Exploración</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Exploración</label>
                 <textarea 
                   rows="3"
                   value={recordForm.exploration}
                   onChange={e => setRecordForm({ ...recordForm, exploration: e.target.value })}
                   placeholder="Ej. Se observa lesión de caries activa profunda en pieza 3.6 oclusal. Sensible a percusión."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
               {/* 4. Diagnóstico */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Diagnóstico (Detalle Libre)</label>
+                  <label className="block text-sm font-medium text-ink-muted mb-1">Diagnóstico (Detalle Libre)</label>
                   <textarea 
                     rows="2"
                     value={recordForm.diagnosis}
                     onChange={e => setRecordForm({ ...recordForm, diagnosis: e.target.value })}
                     placeholder="Ej. Caries dentinaria profunda con sospecha de compromiso pulpar en pieza 3.6"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                   />
                 </div>
 
                 {/* Multiselect del catálogo agrupado por categoría */}
                 {Object.keys(catalog).length > 0 && (
-                  <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 space-y-3">
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  <div className="bg-silver-100/50 p-4 rounded-2xl border border-silver-200 space-y-3">
+                    <label className="block text-xs font-bold text-ink-subtle uppercase tracking-wider">
                       Diagnósticos Sugeridos (Selecciona todos los que correspondan)
                     </label>
                     <div className="space-y-3">
                       {Object.entries(catalog).map(([category, items]) => (
                         <div key={category} className="space-y-1.5">
-                          <span className="text-xs font-bold text-gray-400 capitalize">{category}</span>
+                          <span className="text-xs font-bold text-ink-subtle capitalize">{category}</span>
                           <div className="flex flex-wrap gap-1.5">
                             {items.map((item) => {
                               const isSelected = recordForm.diagnosis_codes.includes(item.name);
@@ -1341,7 +1341,7 @@ export default function PatientDetails() {
                                   className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                                     isSelected
                                       ? 'bg-primary text-white shadow-sm'
-                                      : 'bg-white text-slate-650 hover:bg-slate-100 border border-slate-200'
+                                      : 'bg-white text-ink-muted hover:bg-silver-200 border border-silver-300'
                                   }`}
                                 >
                                   {item.name}
@@ -1358,13 +1358,13 @@ export default function PatientDetails() {
 
               {/* 5. Procedimiento Realizado */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Procedimiento Realizado</label>
+                <label className="block text-sm font-medium text-ink-muted mb-1">Procedimiento Realizado</label>
                 <textarea 
                   rows="2"
                   value={recordForm.procedure_performed}
                   onChange={e => setRecordForm({ ...recordForm, procedure_performed: e.target.value })}
                   placeholder="Ej. Eliminación de caries con fresa de carburo. Cavidad compatible. Obturación temporal."
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-silver-300 focus:outline-none focus:border-secondary focus:shadow-focus transition-all"
                 />
               </div>
 
@@ -1372,7 +1372,7 @@ export default function PatientDetails() {
                 <button 
                   type="button" 
                   onClick={() => setShowRecordModal(false)}
-                  className="w-1/2 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all cursor-pointer"
+                  className="w-1/2 py-3 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-xl transition-all cursor-pointer"
                   disabled={recordFormLoading}
                 >
                   Cancelar
@@ -1380,7 +1380,7 @@ export default function PatientDetails() {
                 <button 
                   type="submit" 
                   disabled={recordFormLoading}
-                  className="w-1/2 py-3 bg-primary hover:bg-secondary text-white font-bold rounded-xl shadow-lg shadow-indigo-100/50 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                  className="w-1/2 py-3 bg-primary hover:bg-secondary text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer"
                 >
                   {recordFormLoading ? (
                     <>
@@ -1401,14 +1401,14 @@ export default function PatientDetails() {
       {!isAssistant && confirmDeselectAlert && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl relative animate-in zoom-in-95 duration-200 text-center space-y-4">
-            <div className="w-12 h-12 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 bg-danger-100 text-danger rounded-full flex items-center justify-center mx-auto">
               <AlertCircle className="w-6 h-6" />
             </div>
             
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-gray-900">Quitar Alerta Médica</h3>
-              <p className="text-xs text-gray-500 px-4">
-                ¿Quitar <span className="font-bold text-gray-900">"{confirmDeselectAlert}"</span> de la ficha permanente del paciente?
+              <h3 className="text-lg font-bold text-ink">Quitar Alerta Médica</h3>
+              <p className="text-xs text-ink-subtle px-4">
+                ¿Quitar <span className="font-bold text-ink">"{confirmDeselectAlert}"</span> de la ficha permanente del paciente?
               </p>
             </div>
 
@@ -1416,7 +1416,7 @@ export default function PatientDetails() {
               <button
                 type="button"
                 onClick={() => setConfirmDeselectAlert(null)}
-                className="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all"
+                className="w-1/2 py-2.5 bg-silver-200 hover:bg-silver-300 text-ink-muted font-bold rounded-xl text-xs transition-all"
               >
                 Cancelar
               </button>
@@ -1426,7 +1426,7 @@ export default function PatientDetails() {
                   await handleRemoveAlert(confirmDeselectAlert);
                   setConfirmDeselectAlert(null);
                 }}
-                className="w-1/2 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-all"
+                className="w-1/2 py-2.5 bg-danger hover:bg-danger-700 text-white font-bold rounded-xl text-xs transition-all"
               >
                 Quitar alerta
               </button>
