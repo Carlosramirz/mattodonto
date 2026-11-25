@@ -270,8 +270,8 @@ export default function Availability() {
                           ${isBooked 
                             ? 'bg-silver-200 text-silver-400 cursor-not-allowed' 
                             : slot.is_active 
-                              ? 'bg-success-100 text-success hover:bg-success-100' 
-                              : 'bg-silver-300 text-ink-muted hover:bg-silver-300'
+                              ? 'bg-success-100 text-success hover:bg-success/20' 
+                              : 'bg-silver-300 text-ink-muted hover:bg-silver-400'
                           }
                         `}
                         title={isBooked ? "No se puede desactivar un bloque ocupado" : slot.is_active ? "Desactivar" : "Activar"}
